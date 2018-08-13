@@ -25,7 +25,7 @@ func OldCostFunction(yHatMatrix *Matrix, yMatrix *Matrix)(float64, error){
 
 	var result float64
 	for i :=0; i <yMatrix.Row; i++{
-		result +=OldLossFunction(yHatMatrix.Data[i][0], yMatrix.Data[i][0])
+		result +=OldLossFunction(yHatMatrix.Cell[i][0], yMatrix.Cell[i][0])
 	}
 
 	return result/(2*float64(number)), nil
@@ -49,7 +49,7 @@ func CostFunction(yHatMatrix *Matrix, yMatrix *Matrix)(float64, error){
 
 	var result float64
 	for i :=0; i <yMatrix.Row; i++{
-		result +=LossFunction(yHatMatrix.Data[i][0], yMatrix.Data[i][0])
+		result +=LossFunction(yHatMatrix.Cell[i][0], yMatrix.Cell[i][0])
 	}
 
 	return result/float64(number), nil

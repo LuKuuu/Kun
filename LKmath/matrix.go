@@ -5,12 +5,13 @@ import (
 	"math/rand"
 	"fmt"
 	"time"
+	"github.com/pkg/errors"
 )
 
 type Matrix struct{
 	Row 		int
 	Column 		int
-	Data  		[][]float64
+	Cell  		[][]float64
 	mu			sync.RWMutex
 }
 
@@ -20,7 +21,11 @@ const(
 )
 
 
-func NewEmptyMatrix(row int, column int)Matrix{
+func NewEmptyMatrix(row int, column int)(Matrix, error){
+
+	if row == 0 || column == 0{
+		return Matrix{}, errors.New("index error")
+	}
 	var data [][]float64
 	for i := 0; i < row; i++ {
 		rowData := make([]float64, 0, row)
@@ -33,10 +38,10 @@ func NewEmptyMatrix(row int, column int)Matrix{
 	matrix :=Matrix{
 		Row:row,
 		Column:column,
-		Data:data,
+		Cell:data,
 	}
 
-	return matrix
+	return matrix, nil
 
 }
 
@@ -46,7 +51,7 @@ func NewCopyMatrix(m Matrix)Matrix{
 	for i := 0; i < m.Row; i++ {
 		rowData := make([]float64, 0, m.Row)
 		for j := 0; j < m.Column; j++ {
-			rowData = append(rowData,0)
+			rowData = append(rowData,m.Cell[i][j])
 		}
 		data = append(data,rowData)
 	}
@@ -54,7 +59,7 @@ func NewCopyMatrix(m Matrix)Matrix{
 	matrix :=Matrix{
 		Row:m.Row,
 		Column:m.Column,
-		Data:data,
+		Cell:data,
 	}
 	return matrix
 }
@@ -66,7 +71,7 @@ func MatrixRandom(m Matrix, max float64, min float64)Matrix{
 
 	for i := 0; i < m.Row; i++ {
 		for j := 0; j < m.Column; j++ {
-			m.Data[i][j] =((max - min) *rand.Float64()) + min
+			m.Cell[i][j] =((max - min) *rand.Float64()) + min
 		}
 	}
 	return m
@@ -75,7 +80,7 @@ func MatrixRandom(m Matrix, max float64, min float64)Matrix{
 func (ma *Matrix)MatrixSigmoid()Matrix{
 	for i := 0; i < ma.Row; i++ {
 		for j := 0; j < ma.Column; j++ {
-			ma.Data[i][j] =Sigmoid(ma.Data[i][j])
+			ma.Cell[i][j] =Sigmoid(ma.Cell[i][j])
 		}
 	}
 	return *ma
@@ -86,7 +91,7 @@ func (ma *Matrix)Hprint(){
 	for i := 0; i < ma.Row; i++ {
 		s := ""
 		for j := 0; j < ma.Column; j++ {
-			s = s + fmt.Sprintf("%f ",ma.Data[i][j])
+			s = s + fmt.Sprintf("%f ",ma.Cell[i][j])
 		}
 		fmt.Printf("%s\n", s)
 
@@ -95,7 +100,43 @@ func (ma *Matrix)Hprint(){
 	fmt.Println()
 }
 
-func matrixMultipulate(){}
+func MatrixMultiplication(a Matrix, b Matrix)(Matrix, error){
+	if a.Column != b.Row {
+		return Matrix{}, errors.New("a.column unequal to b.row, cannot perform multiplication")
+	}
+	result,_ := NewEmptyMatrix(a.Row, b.Column)
 
+	for i :=0; i < b.Column; i ++{
+		for j := 0; j< a.Row; j++{
+			cellSum := 0.0
+			for k :=0; k< a.Column; k++{
+				cellSum +=a.Cell[j][k] * b.Cell[k][i]
+			}
+			result.Cell[j][i] = cellSum
+		}
+	}
+
+	return result, nil
+
+
+}
+
+func TransposedMatrix(m Matrix)Matrix{
+	var data [][]float64
+	for i := 0; i < m.Column; i++ {
+		rowData := make([]float64, 0, m.Column)
+		for j := 0; j < m.Row; j++ {
+			rowData = append(rowData,m.Cell[j][i])
+		}
+		data = append(data,rowData)
+	}
+
+	matrix :=Matrix{
+		Row:m.Column,
+		Column:m.Row,
+		Cell:data,
+	}
+	return matrix
+}
 
 
