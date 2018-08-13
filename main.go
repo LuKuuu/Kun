@@ -9,14 +9,36 @@ import (
 //testing
 
 func main() {
-	a :=LKmath.NewEmptyMatrix(7,7)
-	LKmath.Hprint(a)
 
-	fmt.Println()
+	fmt.Printf("%v\n", time.Now())
 
-	b :=LKmath.MatrixRandom(a,9,-9)
-	LKmath.Hprint(b)
+	a :=LKmath.NewEmptyMatrix(10,1)
+	b :=LKmath.NewCopyMatrix(a)
+	LKmath.MatrixRandom(b,100,-100)
 
-	fmt.Printf("%v", time.Now())
+
+	a.Hprint()
+	b.Hprint()
+
+
+	OldCost, err := LKmath.OldCostFunction(&b, &a)
+	if err != nil{
+		fmt.Printf("%v", err)
+	}else{
+		fmt.Printf("the old cost function result between a and b is %v\n",OldCost)
+
+	}
+
+	a.MatrixSigmoid()
+	b.MatrixSigmoid()
+
+	Cost, err := LKmath.CostFunction(&a, &b)
+	if err != nil{
+		fmt.Printf("%v", err)
+	}else{
+		fmt.Printf("the cost function result between sigmoid a and sigmiod b is %v\n",Cost)
+
+	}
+
 
 }
