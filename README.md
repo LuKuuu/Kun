@@ -10,5 +10,7 @@ Here are several reasons:
 3. I find Go is more than a language only suitable for develop server, and of course machine learning. its a language make me feel ease while coding.
 
 the code is still under testing, you can use or modify it as you wish ;-)
-the name of this package "Kun" is the name of my beloved friend 
+
+the name of this package "Kun" is the name of my most beloved friend 
+
 first edit time :2018-08-12 05:17:08.7120093 -0400 EDT m=+0.002992501
