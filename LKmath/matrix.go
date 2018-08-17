@@ -5,7 +5,6 @@ import (
 	"math/rand"
 	"fmt"
 	"time"
-	"github.com/pkg/errors"
 )
 
 type Matrix struct{
@@ -21,10 +20,12 @@ const(
 )
 
 
-func NewEmptyMatrix(row int, column int)(Matrix, error){
+func NewEmptyMatrix(row int, column int)Matrix{
 
 	if row == 0 || column == 0{
-		return Matrix{}, errors.New("index error")
+		panic("index error")
+
+		return Matrix{}
 	}
 	var data [][]float64
 	for i := 0; i < row; i++ {
@@ -41,7 +42,7 @@ func NewEmptyMatrix(row int, column int)(Matrix, error){
 		Cell:data,
 	}
 
-	return matrix, nil
+	return matrix
 
 }
 
@@ -100,11 +101,12 @@ func (ma *Matrix)Hprint(){
 	fmt.Println()
 }
 
-func MatrixMultiplication(a Matrix, b Matrix)(Matrix, error){
+func MatrixMultiplication(a Matrix, b Matrix)Matrix{
 	if a.Column != b.Row {
-		return Matrix{}, errors.New("a.column unequal to b.row, cannot perform multiplication")
+		panic("a.column unequal to b.row, cannot perform multiplication")
+		return Matrix{}
 	}
-	result,_ := NewEmptyMatrix(a.Row, b.Column)
+	result:= NewEmptyMatrix(a.Row, b.Column)
 
 	for i :=0; i < b.Column; i ++{
 		for j := 0; j< a.Row; j++{
@@ -116,7 +118,7 @@ func MatrixMultiplication(a Matrix, b Matrix)(Matrix, error){
 		}
 	}
 
-	return result, nil
+	return result
 
 
 }
@@ -131,12 +133,74 @@ func TransposedMatrix(m Matrix)Matrix{
 		data = append(data,rowData)
 	}
 
-	matrix :=Matrix{
+	mT :=Matrix{
 		Row:m.Column,
 		Column:m.Row,
+		Cell:data,
+	}
+	return mT
+}
+
+func InverseMatrix(m Matrix)Matrix{
+	if m.Column != m.Row {
+		panic("non-square matrix cannot perform inverse")
+		return Matrix{}
+	}
+	mI:= NewEmptyMatrix(m.Row, m.Column)
+
+
+	//}for i :=0; i < b.Column; i ++{
+	//	for j := 0; j< a.Row; j++{
+	//		cellSum := 0.0
+	//		for k :=0; k< a.Column; k++{
+	//			cellSum +=a.Cell[j][k] * b.Cell[k][i]
+	//		}
+	//		result.Cell[j][i] = cellSum
+	//	}
+
+	return mI
+
+}
+
+//func NormalEquation(X Matrix, y Matrix)(result Matrix,error error){
+//	if y.Row != X.Row || y.Column != 1{
+//		return Matrix{}, errors.New("value error")
+//	}
+//
+//
+//	return InverseMatrix(MatrixMultiplication(TransposedMatrix(X), X))
+//}
+
+
+
+//cut matrix into a new matrix (include both begin value and end value)
+func CutMatrix(m Matrix, rowBegin int, rowEnd int, columnBegin int, columnEnd int)Matrix{
+
+	if rowBegin<0 || rowEnd >= m.Row || columnBegin<0 || columnEnd >= m.Column{
+		panic("index out of range")
+	}
+
+	row := rowEnd - rowBegin +1
+	column := columnEnd - columnBegin +1
+
+
+	var data [][]float64
+	for i := rowBegin; i <= rowEnd; i++ {
+		rowData := make([]float64, 0, row)
+		for j := columnBegin; j <= columnEnd; j++ {
+			rowData = append(rowData,m.Cell[i][j])
+		}
+		data = append(data,rowData)
+	}
+
+	matrix :=Matrix{
+		Row:row,
+		Column:column,
 		Cell:data,
 	}
 	return matrix
 }
 
-
+//func Determinate(m Matrix)(float64, error){
+//
+//}
