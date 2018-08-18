@@ -143,33 +143,26 @@ func TransposedMatrix(m Matrix)Matrix{
 
 func InverseMatrix(m Matrix)Matrix{
 	if m.Column != m.Row {
-		panic("non-square matrix cannot perform inverse")
+		panic("non-square matrix. cannot perform inverse")
 		return Matrix{}
 	}
-	mI:= NewEmptyMatrix(m.Row, m.Column)
+
+	adj := AdjugateMatrix(m)
+	adj.Hprint()
 
 
-	//}for i :=0; i < b.Column; i ++{
-	//	for j := 0; j< a.Row; j++{
-	//		cellSum := 0.0
-	//		for k :=0; k< a.Column; k++{
-	//			cellSum +=a.Cell[j][k] * b.Cell[k][i]
-	//		}
-	//		result.Cell[j][i] = cellSum
-	//	}
+	det :=Determinant(m)
 
-	return mI
+	if det == 0{
+		panic("The determinant is 0, the matrix is not invertible")
+	}
+
+
+	return MatrixTimesRealNumber(AdjugateMatrix(m), 1/det)
 
 }
 
-//func NormalEquation(X Matrix, y Matrix)(result Matrix,error error){
-//	if y.Row != X.Row || y.Column != 1{
-//		return Matrix{}, errors.New("value error")
-//	}
-//
-//
-//	return InverseMatrix(MatrixMultiplication(TransposedMatrix(X), X))
-//}
+
 
 
 
@@ -201,6 +194,176 @@ func CutMatrix(m Matrix, rowBegin int, rowEnd int, columnBegin int, columnEnd in
 	return matrix
 }
 
-//func Determinate(m Matrix)(float64, error){
-//
-//}
+
+
+func RemoveRow(m Matrix, rowIndex int)Matrix{
+
+	if rowIndex >= m.Row{
+		panic("index out of range")
+	}
+
+	row := m.Row - 1
+	column := m.Column
+
+
+	var data [][]float64
+	for i := 0; i < m.Row; i++ {
+		if i == rowIndex{continue}
+		rowData := make([]float64, 0, row)
+		for j := 0; j < m.Column; j++ {
+			rowData = append(rowData,m.Cell[i][j])
+		}
+		data = append(data,rowData)
+	}
+
+	matrix :=Matrix{
+		Row:row,
+		Column:column,
+		Cell:data,
+	}
+	return matrix
+}
+
+
+func RemoveColumn(m Matrix, columnIndex int)Matrix{
+
+	if columnIndex >= m.Column{
+		panic("RemoveColumn index out of range")
+	}
+
+	row := m.Row
+	column := m.Column - 1
+
+
+	var data [][]float64
+	for i := 0; i < m.Row; i++ {
+		rowData := make([]float64, 0, row)
+		for j := 0; j < m.Column; j++ {
+			if j == columnIndex{continue}
+			rowData = append(rowData,m.Cell[i][j])
+		}
+		data = append(data,rowData)
+	}
+
+	matrix :=Matrix{
+		Row:row,
+		Column:column,
+		Cell:data,
+	}
+	return matrix
+}
+
+
+func RemoveRowAndColumn(m Matrix, rowIndex int, columnIndex int)Matrix{
+
+	if rowIndex >= m.Row || columnIndex >= m.Column{
+		panic("index out of range")
+	}
+
+	row := m.Row - 1
+	column := m.Column - 1
+
+
+	var data [][]float64
+	for i := 0; i < m.Row; i++ {
+		if i == rowIndex{continue}
+		rowData := make([]float64, 0, row)
+		for j := 0; j < m.Column; j++ {
+			if j == columnIndex{continue}
+			rowData = append(rowData,m.Cell[i][j])
+		}
+		data = append(data,rowData)
+	}
+
+	matrix :=Matrix{
+		Row:row,
+		Column:column,
+		Cell:data,
+	}
+	return matrix
+}
+
+
+func Determinant(m Matrix)float64{
+
+	if m.Row != m.Column{
+		panic("non-square matrix. can't calculate determinant")
+		return 0
+	}
+
+	if m.Row == 2{
+		return m.Cell[0][0] * m.Cell[1][1] - m.Cell[0][1] * m.Cell[1][0]
+	}else{
+		var result float64
+		for i := 0; i < m.Row; i ++{
+			sign := 0.0
+			if i ==0 || i % 2 == 0{
+				sign = 1
+			}else{
+				sign = -1
+			}
+
+			subMatrixResult :=sign * m.Cell[0][i] * Determinant(RemoveRowAndColumn(m, 0, i))
+			result = result + subMatrixResult
+
+
+		}
+
+		return result
+
+
+
+	}
+
+
+
+}
+
+
+func MatrixTimesRealNumber(m Matrix, rn float64)Matrix{
+	var data [][]float64
+	for i := 0; i < m.Row; i++ {
+		rowData := make([]float64, 0, m.Row)
+		for j := 0; j < m.Column; j++ {
+			rowData = append(rowData,m.Cell[i][j] * rn)
+		}
+		data = append(data,rowData)
+	}
+
+	matrix :=Matrix{
+		Row:m.Row,
+		Column:m.Column,
+		Cell:data,
+	}
+	return matrix
+}
+
+func AdjugateMatrix(m Matrix)Matrix{
+	var data [][]float64
+	for i := 0; i < m.Row; i++ {
+		rowData := make([]float64, 0, m.Row)
+		for j := 0; j < m.Column; j++ {
+			rowData = append(rowData, adjugatedCell(m, j, i))
+		}
+		data = append(data,rowData)
+	}
+
+	matrix :=Matrix{
+		Row:m.Row,
+		Column:m.Column,
+		Cell:data,
+	}
+	return matrix
+}
+
+func adjugatedCell(m Matrix, rowIndex int, columnIndex int)float64{
+
+	sign := 0.0
+	if rowIndex + columnIndex == 0 || (rowIndex + columnIndex)%2 == 0{
+		sign = 1
+	}else{
+		sign = -1
+	}
+
+	return sign * Determinant(RemoveRowAndColumn(m, rowIndex, columnIndex))
+}

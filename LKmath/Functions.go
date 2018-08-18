@@ -55,3 +55,19 @@ func CostFunction(yHatMatrix *Matrix, yMatrix *Matrix)(float64, error){
 	return result/float64(number), nil
 
 }
+
+func NormalEquation(X Matrix, y Matrix)Matrix{
+	if y.Row != X.Row || y.Column != 1{
+		panic("value format error")
+	}
+	XT := TransposedMatrix(X)
+
+	a := MatrixMultiplication(XT, X)
+	a.Hprint()
+	A :=InverseMatrix(a)
+	A.Hprint()
+	result := MatrixMultiplication(MatrixMultiplication(A, XT), y)
+	return result
+
+
+}
