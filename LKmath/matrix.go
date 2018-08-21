@@ -81,14 +81,15 @@ func MatrixRandom(m Matrix, max float64, min float64)Matrix{
 func (ma *Matrix)MatrixSigmoid()Matrix{
 	for i := 0; i < ma.Row; i++ {
 		for j := 0; j < ma.Column; j++ {
-			ma.Cell[i][j] =Sigmoid(ma.Cell[i][j])
+			ma.Cell[i][j] =SigmoidFunction(ma.Cell[i][j])
 		}
 	}
 	return *ma
 }
 
 
-func (ma *Matrix)Hprint(){
+func (ma *Matrix)Hprint(info string){
+	fmt.Printf(info+"\n")
 	for i := 0; i < ma.Row; i++ {
 		s := ""
 		for j := 0; j < ma.Column; j++ {
@@ -147,20 +148,26 @@ func InverseMatrix(m Matrix)Matrix{
 		return Matrix{}
 	}
 
-	adj := AdjugateMatrix(m)
-	adj.Hprint()
-
-
 	det :=Determinant(m)
 
 	if det == 0{
-		panic("The determinant is 0, the matrix is not invertible")
+		fmt.Printf("The determinant is 0, the matrix is not invertible\n")
+		return MoorePenroseInverse(m)
+
 	}
 
 
 	return MatrixTimesRealNumber(AdjugateMatrix(m), 1/det)
 
 }
+
+
+func MoorePenroseInverse(m Matrix)Matrix{
+	//todo: add Moore-Penrose Inverse in case the matrix is invertible
+	panic("moore penrose inverse is not available right now")
+	return Matrix{}
+}
+
 
 
 
