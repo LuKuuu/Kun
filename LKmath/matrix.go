@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"fmt"
 	"time"
+	"math"
 )
 
 type Matrix struct{
@@ -24,9 +25,8 @@ func NewEmptyMatrix(row int, column int)Matrix{
 
 	if row == 0 || column == 0{
 		panic("index error")
-
-		return Matrix{}
 	}
+
 	var data [][]float64
 	for i := 0; i < row; i++ {
 		rowData := make([]float64, 0, row)
@@ -44,6 +44,54 @@ func NewEmptyMatrix(row int, column int)Matrix{
 
 	return matrix
 
+}
+
+func NewValuedMatrix(row int, column int, value float64)Matrix{
+
+	if row == 0 || column == 0{
+		panic("index error")
+
+	}
+	var data [][]float64
+	for i := 0; i < row; i++ {
+		rowData := make([]float64, 0, row)
+		for j := 0; j < column; j++ {
+			rowData = append(rowData,value)
+		}
+		data = append(data,rowData)
+	}
+
+	matrix :=Matrix{
+		Row:row,
+		Column:column,
+		Cell:data,
+	}
+
+	return matrix
+
+}
+
+
+func NewIdentityMatrix(size int)Matrix{
+	var data [][]float64
+	for i := 0; i < size; i++ {
+		rowData := make([]float64, 0, size)
+		for j := 0; j < size; j++ {
+			if i == j{
+				rowData = append(rowData,1)
+			}else{
+				rowData = append(rowData,0)
+			}
+		}
+		data = append(data,rowData)
+	}
+
+	matrix :=Matrix{
+		Row: size,
+		Column: size,
+		Cell:data,
+	}
+	return matrix
 }
 
 
@@ -67,7 +115,36 @@ func NewCopyMatrix(m Matrix)Matrix{
 
 
 
-func MatrixRandom(m Matrix, max float64, min float64)Matrix{
+func NewRandomMatrix(row int, column int, min float64, max float64)Matrix{
+
+	rand.Seed(time.Now().UnixNano())
+
+	if row == 0 || column == 0{
+		panic("index error")
+
+	}
+	var data [][]float64
+	for i := 0; i < row; i++ {
+		rowData := make([]float64, 0, row)
+		for j := 0; j < column; j++ {
+			rowData = append(rowData,((max - min) *rand.Float64()) + min)
+		}
+		data = append(data,rowData)
+	}
+
+	matrix :=Matrix{
+		Row:row,
+		Column:column,
+		Cell:data,
+	}
+
+	return matrix
+
+}
+
+
+
+func MatrixRandom(m Matrix, min float64, max float64)Matrix{
 	rand.Seed(time.Now().UnixNano())
 
 	for i := 0; i < m.Row; i++ {
@@ -77,6 +154,7 @@ func MatrixRandom(m Matrix, max float64, min float64)Matrix{
 	}
 	return m
 }
+
 
 func (ma *Matrix)MatrixSigmoid()Matrix{
 	for i := 0; i < ma.Row; i++ {
@@ -105,7 +183,6 @@ func (ma *Matrix)Hprint(info string){
 func MatrixMultiplication(a Matrix, b Matrix)Matrix{
 	if a.Column != b.Row {
 		panic("a.column unequal to b.row, cannot perform multiplication")
-		return Matrix{}
 	}
 	result:= NewEmptyMatrix(a.Row, b.Column)
 
@@ -145,7 +222,6 @@ func TransposedMatrix(m Matrix)Matrix{
 func InverseMatrix(m Matrix)Matrix{
 	if m.Column != m.Row {
 		panic("non-square matrix. cannot perform inverse")
-		return Matrix{}
 	}
 
 	det :=Determinant(m)
@@ -165,7 +241,6 @@ func InverseMatrix(m Matrix)Matrix{
 func MoorePenroseInverse(m Matrix)Matrix{
 	//todo: add Moore-Penrose Inverse in case the matrix is invertible
 	panic("moore penrose inverse is not available right now")
-	return Matrix{}
 }
 
 
@@ -374,3 +449,169 @@ func adjugatedCell(m Matrix, rowIndex int, columnIndex int)float64{
 
 	return sign * Determinant(RemoveRowAndColumn(m, rowIndex, columnIndex))
 }
+
+func MatrixAdd(a Matrix, b Matrix)Matrix{
+	if a.Row != b.Row || a.Column != b.Column{
+		panic("matrix doesn't fit each other, can't perform adding")
+	}
+	var data [][]float64
+	for i := 0; i < a.Row; i++ {
+		rowData := make([]float64, 0, a.Row)
+		for j := 0; j < a.Column; j++ {
+			rowData = append(rowData,a.Cell[i][j]+b.Cell[i][j])
+		}
+		data = append(data,rowData)
+	}
+
+	matrix :=Matrix{
+		Row:a.Row,
+		Column:a.Column,
+		Cell:data,
+	}
+	return matrix
+}
+
+func MatrixSubtraction(a Matrix, b Matrix)Matrix{
+	if a.Row != b.Row || a.Column != b.Column{
+		panic("matrix doesn't fit each other, can't perform subtraction")
+	}
+	var data [][]float64
+	for i := 0; i < a.Row; i++ {
+		rowData := make([]float64, 0, a.Row)
+		for j := 0; j < a.Column; j++ {
+			rowData = append(rowData,a.Cell[i][j]-b.Cell[i][j])
+		}
+		data = append(data,rowData)
+	}
+
+	matrix :=Matrix{
+		Row:a.Row,
+		Column:a.Column,
+		Cell:data,
+	}
+	return matrix
+}
+
+func(this *Matrix)Update(newMatrix Matrix){
+	if this.Row != newMatrix.Row || this.Column != newMatrix.Column{
+		fmt.Printf("Notice: format will be changed\n")
+		this.Column = newMatrix.Column
+		this.Row = newMatrix.Row
+	}
+
+	var data [][]float64
+	for i := 0; i < newMatrix.Row; i++ {
+		rowData := make([]float64, 0, newMatrix.Row)
+		for j := 0; j < newMatrix.Column; j++ {
+			rowData = append(rowData,newMatrix.Cell[i][j])
+		}
+		data = append(data,rowData)
+	}
+
+	this.Cell = data
+
+}
+
+func SqueezedSumRowMatrix(m Matrix)Matrix{
+
+	var data [][]float64
+	rowData := make([]float64, 0, m.Row)
+	for i := 0; i < m.Column; i ++{
+		cellResult := 0.0
+		for j :=0; j < m.Row; j++{
+			cellResult += m.Cell[j][i]
+		}
+		rowData = append(rowData,cellResult)
+	}
+	data = append(data,rowData)
+
+
+	matrix :=Matrix{
+		Row:1,
+		Column:m.Column,
+		Cell:data,
+	}
+
+	return matrix
+}
+
+
+
+func SqueezedAverageRowMatrix(m Matrix)Matrix{
+
+	return MatrixTimesRealNumber(SqueezedSumRowMatrix(m), 1/float64(m.Row))
+}
+
+
+func SqueezedMaxRowMatrix(m Matrix)Matrix{
+
+	var data [][]float64
+	rowData := make([]float64, 0, m.Row)
+	for i := 0; i < m.Column; i ++{
+		Max := m.Cell[0][i]
+		for j :=1; j < m.Row; j++{
+			if m.Cell[j][i] > Max{
+				Max = m.Cell[j][i]
+			}
+		}
+		rowData = append(rowData,Max)
+	}
+	data = append(data,rowData)
+
+
+	matrix :=Matrix{
+		Row:1,
+		Column:m.Column,
+		Cell:data,
+	}
+
+	return matrix
+}
+
+
+func SqueezedMinRowMatrix(m Matrix)Matrix{
+
+	var data [][]float64
+	rowData := make([]float64, 0, m.Row)
+	for i := 0; i < m.Column; i ++{
+		Min := m.Cell[0][i]
+		for j :=1; j < m.Row; j++{
+			if m.Cell[j][i] < Min{
+				Min = m.Cell[j][i]
+			}
+		}
+		rowData = append(rowData,Min)
+	}
+	data = append(data,rowData)
+
+
+	matrix :=Matrix{
+		Row:1,
+		Column:m.Column,
+		Cell:data,
+	}
+
+	return matrix
+}
+
+
+func AbsMatrix(m Matrix)Matrix{
+	var data [][]float64
+	for i := 0; i < m.Row; i++ {
+		rowData := make([]float64, 0, m.Row)
+		for j := 0; j < m.Column; j++ {
+			rowData = append(rowData,math.Abs(m.Cell[i][j]))
+		}
+		data = append(data,rowData)
+	}
+
+	matrix :=Matrix{
+		Row:m.Row,
+		Column:m.Column,
+		Cell:data,
+	}
+	return matrix
+}
+
+
+

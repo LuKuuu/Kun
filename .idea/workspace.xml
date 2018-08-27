@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="eb6f0a6f-6684-495d-81c0-d5056ddc280b" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/Edward.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LKmath/Functions.go" beforeDir="false" afterPath="$PROJECT_DIR$/LKmath/Functions.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LKmath/matrix.go" beforeDir="false" afterPath="$PROJECT_DIR$/LKmath/matrix.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
     </list>
@@ -20,8 +18,8 @@
       <file leaf-file-name="matrix.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/LKmath/matrix.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="91" column="25" lean-forward="true" selection-start-line="91" selection-start-column="25" selection-end-line="91" selection-end-column="25" />
+            <state relative-caret-position="-17">
+              <caret line="44" column="17" selection-start-line="29" selection-start-column="4" selection-end-line="44" selection-end-column="17" />
             </state>
           </provider>
         </entry>
@@ -29,7 +27,7 @@
       <file leaf-file-name="print.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../../../../../src/fmt/print.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="149">
+            <state relative-caret-position="-7">
               <caret line="195" column="5" selection-start-line="195" selection-start-column="5" selection-end-line="195" selection-end-column="5" />
             </state>
           </provider>
@@ -38,26 +36,24 @@
       <file leaf-file-name="builtin.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../../../../../src/builtin/builtin.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
+            <state relative-caret-position="-7">
               <caret line="226" column="5" selection-start-line="226" selection-start-column="5" selection-end-line="226" selection-end-column="5" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Functions.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/LKmath/Functions.go">
+      <file leaf-file-name="functions.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/LKmath/functions.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="275">
-              <caret line="38" column="59" selection-start-line="38" selection-start-column="59" selection-end-line="38" selection-end-column="59" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="sqrt.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../../../../src/math/sqrt.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret line="107" column="13" selection-start-line="107" selection-start-column="7" selection-end-line="107" selection-end-column="13" />
+            <state relative-caret-position="103">
+              <caret line="172" column="87" selection-start-line="172" selection-start-column="87" selection-end-line="172" selection-end-column="87" />
+              <folding>
+                <element signature="e#16#45#0" expanded="true" />
+                <element signature="n#!!block;n#LinearRegressionLossFunction#0" />
+                <element signature="n#!!block;n#LinearRegressionCostFunction#0" />
+                <element signature="n#!!block;n#NormalEquation#0" />
+                <element signature="n#!!block;n#RegularizedNormalEquation#0" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -65,8 +61,17 @@
       <file leaf-file-name="main.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-50">
-              <caret line="77" column="62" selection-start-line="77" selection-start-column="62" selection-end-line="77" selection-end-column="62" />
+            <state relative-caret-position="198">
+              <caret line="133" column="35" selection-start-line="133" selection-start-column="35" selection-end-line="133" selection-end-column="35" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="panic.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../../../../../src/runtime/panic.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-7">
+              <caret line="588" column="29" selection-start-line="588" selection-start-column="29" selection-end-line="588" selection-end-column="29" />
             </state>
           </provider>
         </entry>
@@ -92,6 +97,8 @@
       <find>ant of test matr</find>
       <find>inverse</find>
       <find>hp</find>
+      <find>abs</find>
+      <find>return Matri</find>
     </findStrings>
   </component>
   <component name="GOROOT" path="D:\Go" />
@@ -103,6 +110,7 @@
       <list>
         <option value="$PROJECT_DIR$/LKmath/Functions.go" />
         <option value="$PROJECT_DIR$/LKmath/matrix.go" />
+        <option value="$PROJECT_DIR$/LKmath/functions.go" />
         <option value="$PROJECT_DIR$/main.go" />
       </list>
     </option>
@@ -117,10 +125,10 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-9" />
-    <option name="y" value="-9" />
-    <option name="width" value="978" />
-    <option name="height" value="1089" />
+    <option name="x" value="-10" />
+    <option name="y" value="-10" />
+    <option name="width" value="980" />
+    <option name="height" value="1090" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -213,18 +221,19 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="878" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16471355" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.16471355" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
+      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.2379085" />
+      <window_info anchor="bottom" id="Version Control" order="9" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3006536" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" order="7" />
+      <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.5568628" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.503268" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -233,6 +242,26 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32941177" />
     </layout>
+    <layout-to-restore>
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.39215687" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16471355" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32941177" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.5568628" />
+      <window_info anchor="bottom" id="Terminal" order="8" />
+      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
+      <window_info anchor="bottom" id="Version Control" order="9" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="right" id="Database" order="3" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+    </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
@@ -249,10 +278,94 @@
           <option name="timeStamp" value="17" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="18" />
+      <option name="time" value="21" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/LKmath/matrix.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3975">
+          <caret line="164" column="41" selection-start-line="164" selection-start-column="41" selection-end-line="164" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../../src/fmt/print.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4875">
+          <caret line="195" column="5" selection-start-line="195" selection-start-column="5" selection-end-line="195" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../../src/builtin/builtin.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5650">
+          <caret line="226" column="5" selection-start-line="226" selection-start-column="5" selection-end-line="226" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LKmath/functions.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="750">
+          <caret line="33" column="5" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
+          <folding>
+            <element signature="e#16#45#0" expanded="true" />
+            <element signature="n#!!block;n#LinearRegressionLossFunction#0" />
+            <element signature="n#!!block;n#LinearRegressionCostFunction#0" />
+            <element signature="n#!!block;n#NormalEquation#0" />
+            <element signature="n#!!block;n#RegularizedNormalEquation#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1725">
+          <caret line="73" column="69" selection-start-line="73" selection-start-column="69" selection-end-line="73" selection-end-column="69" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LKmath/matrix.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2150">
+          <caret line="91" column="25" selection-start-line="91" selection-start-column="25" selection-end-line="91" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../../src/fmt/print.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4875">
+          <caret line="195" column="5" selection-start-line="195" selection-start-column="5" selection-end-line="195" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../../src/builtin/builtin.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5650">
+          <caret line="226" column="5" selection-start-line="226" selection-start-column="5" selection-end-line="226" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LKmath/functions.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="875">
+          <caret line="38" column="59" selection-start-line="38" selection-start-column="59" selection-end-line="38" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../../src/math/sqrt.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2675">
+          <caret line="107" column="13" selection-start-line="107" selection-start-column="7" selection-end-line="107" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1825">
+          <caret line="77" column="62" selection-start-line="77" selection-start-column="62" selection-end-line="77" selection-end-column="62" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/LKmath/matrix.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2869">
@@ -267,7 +380,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/LKmath/Functions.go">
+    <entry file="file://$PROJECT_DIR$/LKmath/functions.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1045">
           <caret line="58" column="5" selection-start-line="58" selection-start-column="5" selection-end-line="58" selection-end-column="5" />
@@ -295,7 +408,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/LKmath/Functions.go">
+    <entry file="file://$PROJECT_DIR$/LKmath/functions.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1025">
           <caret line="41" column="44" selection-start-line="41" selection-start-column="44" selection-end-line="41" selection-end-column="44" />
@@ -337,7 +450,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/LKmath/Functions.go">
+    <entry file="file://$PROJECT_DIR$/LKmath/functions.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="950">
           <caret line="41" column="44" lean-forward="true" selection-start-line="41" selection-start-column="44" selection-end-line="41" selection-end-column="44" />
@@ -351,7 +464,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/LKmath/Functions.go">
+    <entry file="file://$PROJECT_DIR$/LKmath/functions.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
           <caret line="15" column="28" lean-forward="true" selection-start-line="15" selection-start-column="28" selection-end-line="15" selection-end-column="28" />
@@ -381,43 +494,57 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../../../../../src/math/sqrt.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
+        <state relative-caret-position="25">
           <caret line="107" column="13" selection-start-line="107" selection-start-column="7" selection-end-line="107" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../../src/runtime/panic.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-7">
+          <caret line="588" column="29" selection-start-line="588" selection-start-column="29" selection-end-line="588" selection-end-column="29" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../../../../src/builtin/builtin.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
+        <state relative-caret-position="-7">
           <caret line="226" column="5" selection-start-line="226" selection-start-column="5" selection-end-line="226" selection-end-column="5" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../../../../src/fmt/print.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="149">
+        <state relative-caret-position="-7">
           <caret line="195" column="5" selection-start-line="195" selection-start-column="5" selection-end-line="195" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/LKmath/Functions.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="38" column="59" selection-start-line="38" selection-start-column="59" selection-end-line="38" selection-end-column="59" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/LKmath/matrix.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="91" column="25" lean-forward="true" selection-start-line="91" selection-start-column="25" selection-end-line="91" selection-end-column="25" />
+        <state relative-caret-position="-17">
+          <caret line="44" column="17" selection-start-line="29" selection-start-column="4" selection-end-line="44" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LKmath/functions.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="103">
+          <caret line="172" column="87" selection-start-line="172" selection-start-column="87" selection-end-line="172" selection-end-column="87" />
+          <folding>
+            <element signature="e#16#45#0" expanded="true" />
+            <element signature="n#!!block;n#LinearRegressionLossFunction#0" />
+            <element signature="n#!!block;n#LinearRegressionCostFunction#0" />
+            <element signature="n#!!block;n#NormalEquation#0" />
+            <element signature="n#!!block;n#RegularizedNormalEquation#0" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-50">
-          <caret line="77" column="62" selection-start-line="77" selection-start-column="62" selection-end-line="77" selection-end-column="62" />
+        <state relative-caret-position="198">
+          <caret line="133" column="35" selection-start-line="133" selection-start-column="35" selection-end-line="133" selection-end-column="35" />
         </state>
       </provider>
     </entry>
