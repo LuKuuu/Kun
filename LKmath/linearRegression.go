@@ -1,10 +1,64 @@
 package LKmath
 
 import (
-	"math"
 	"fmt"
-	"strconv"
 )
+
+
+/*-------------------------------------------------example----------------------------------------------------*/
+
+func EXAMPLE(){
+
+	//a real problem : find the relationship between features of house and house price
+
+	X :=NewEmptyMatrix(5,4)
+	//features of houses
+	//-----x0-------------size----------bedrooms-----------age-------
+	X.Cell[0][0]=1;	X.Cell[0][1]=2104; X.Cell[0][2]=5;X.Cell[0][3]=45
+	X.Cell[1][0]=1; X.Cell[1][1]=1416; X.Cell[1][2]=3;X.Cell[1][3]=40
+	X.Cell[2][0]=1; X.Cell[2][1]=1534; X.Cell[2][2]=3;X.Cell[2][3]=30
+	X.Cell[3][0]=1; X.Cell[3][1]= 850; X.Cell[3][2]=2;X.Cell[3][3]=36
+	X.Cell[4][0]=1; X.Cell[4][1]=1300; X.Cell[4][2]=4;X.Cell[4][3]=50
+
+
+
+	X.Hprint("features of houses (X):")
+
+	a := Determinant(MatrixMultiplication(TransposedMatrix(X), X))
+	fmt.Printf("%v\n", a)
+
+
+	y :=NewEmptyMatrix(5,1)
+	//--price of houses
+	y.Cell[0][0]=460
+	y.Cell[1][0]=232
+	y.Cell[2][0]=315
+	y.Cell[3][0]=178
+	y.Cell[4][0]=220
+	y.Hprint("price of each house are")
+
+
+
+	example :=NewEmptyMatrix(1, 4)
+	example.Cell[0][0] = 1; example.Cell[0][1] = 1000; example.Cell[0][2] = 4; example.Cell[0][3] = 0
+	example.Hprint("now I have a house with 1000 square feet, 4 bedrooms and is a brand new house")
+
+
+
+	result := NormalEquation(X, y)
+	result.Hprint("the result is :")
+	priceOfExampleHouse :=MatrixMultiplication(example, result)
+	priceOfExampleHouse.Hprint("predicted price of example house is :")
+
+
+
+	regularizedResult := RegularizedNormalEquation(X, y, 0.001)
+	regularizedResult.Hprint("the regularized result is :")
+	priceOfRegularizedExampleHouse :=MatrixMultiplication(example, regularizedResult)
+	priceOfRegularizedExampleHouse.Hprint("regularized predicted price of example house is :")
+
+}
+
 
 /*-------------------------------------------------linear regression----------------------------------------------------*/
 
@@ -71,7 +125,7 @@ func RegularizedNormalEquation(X Matrix, y Matrix, lambda float64)Matrix{
 
 
 
-func NormalGradientDecent(X Matrix, y Matrix, alpha float64, startParameter Matrix, learningTimes int)Matrix{
+func LinearRegressionGradientDecent(X Matrix, y Matrix, alpha float64, startParameter Matrix, learningTimes int)Matrix{
 	//X: data( if we have m examples and n features, X should be a m * (n+1) matrix, with X.data[*][0]=1)
 	//y: result (m examples means we should have m results y should be a m * 1 matrix)
 	//startParameter (an n * 1 matrix with parameters we want to start the gradient decent)
@@ -86,9 +140,10 @@ func NormalGradientDecent(X Matrix, y Matrix, alpha float64, startParameter Matr
 
 	for{
 		times ++
-		derivative.Update(derivativeOfCostFunction(X, y,parameter))
-		if times%100 == 0{
-			derivative.Hprint(strconv.Itoa(times)+" times learning derivative is :")
+		derivative.Update(derivativeOfLinearRegressionCostFunction(X, y,parameter))
+		if times%500000 == 0{
+			fmt.Printf("progress : %d%%\n", times/learningTimes)
+			derivative.Hprint("current derivative is :")
 			parameter.Hprint("and the parameter is: ")
 
 		}
@@ -117,9 +172,9 @@ func NormalGradientDecent(X Matrix, y Matrix, alpha float64, startParameter Matr
 }
 
 
-func derivativeOfCostFunction(X Matrix, y Matrix,parameter Matrix)Matrix{
+func derivativeOfLinearRegressionCostFunction(X Matrix, y Matrix,parameter Matrix)Matrix{
 
-	//Xt * ((X * parameter) - y)
+	//(Xt * ((X * parameter) - y))/m
 	return MatrixTimesRealNumber(MatrixMultiplication(TransposedMatrix(X), MatrixSubtraction(MatrixMultiplication(X, parameter),y)),1/float64(X.Row))
 
 }
@@ -170,7 +225,7 @@ func ScariedGradientDecent(X Matrix, y Matrix, alpha float64, supportMatrix Matr
 
 
 
-	rowResult :=NormalGradientDecent(improvedX, y, alpha,improvedStartParameter, learningTimes)
+	rowResult := LinearRegressionGradientDecent(improvedX, y, alpha,improvedStartParameter, learningTimes)
 	rowResult.Hprint("row result is: ")
 	return ResultRecovering(rowResult, recoveryMatrix)
 }
@@ -220,35 +275,4 @@ func findDigit(value float64)float64{
 	}
 }
 
-
-
-
-/*--------------------------------------------------logical regression--------------------------------------------------*/
-
-func SigmoidFunction(x float64)float64{
-	return 1/(1+ math.Exp(x))
-}
-
-func LogicalRegressionLossFunction(yHat float64, y float64)float64{
-	return -(y * math.Log(yHat))+ (1-y)*(math.Log(1-yHat))
-}
-
-func LogicalRegressionCostFunction(yHatMatrix *Matrix, yMatrix *Matrix)float64{
-	if yHatMatrix.Column !=1 || yMatrix.Column !=1 || yHatMatrix.Row != yMatrix.Row {
-		panic("format error")
-	}
-
-	number := yHatMatrix.Row
-	if number == 0{
-		panic("void matrix")
-	}
-
-	var result float64
-	for i :=0; i <yMatrix.Row; i++{
-		result +=LogicalRegressionLossFunction(yHatMatrix.Cell[i][0], yMatrix.Cell[i][0])
-	}
-
-	return result/float64(number)
-
-}
 

@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/LuKuuu/Kun/LKmath"
 	"time"
+	"github.com/LuKuuu/Kun/LKmath"
 )
 
 //testing
@@ -68,51 +68,51 @@ func main() {
 
 	//a real problem : find the relationship between features of house and house price
 
-	X :=LKmath.NewEmptyMatrix(5,4)
-	//features of houses
-	//-----x0-------------size----------bedrooms-----------age-------
-	X.Cell[0][0]=1;	X.Cell[0][1]=2104; X.Cell[0][2]=5;X.Cell[0][3]=45
-	X.Cell[1][0]=1; X.Cell[1][1]=1416; X.Cell[1][2]=3;X.Cell[1][3]=40
-	X.Cell[2][0]=1; X.Cell[2][1]=1534; X.Cell[2][2]=3;X.Cell[2][3]=30
-	X.Cell[3][0]=1; X.Cell[3][1]= 850; X.Cell[3][2]=2;X.Cell[3][3]=36
-	X.Cell[4][0]=1; X.Cell[4][1]=1300; X.Cell[4][2]=4;X.Cell[4][3]=50
-
-
-
-	X.Hprint("features of houses (X):")
-
-	a := LKmath.Determinant(LKmath.MatrixMultiplication(LKmath.TransposedMatrix(X), X))
-	fmt.Printf("%v\n", a)
-
-
-	y :=LKmath.NewEmptyMatrix(5,1)
-	//--price of houses
-	y.Cell[0][0]=460
-	y.Cell[1][0]=232
-	y.Cell[2][0]=315
-	y.Cell[3][0]=178
-	y.Cell[4][0]=220
-	y.Hprint("price of each house are")
-
-
-
-	example :=LKmath.NewEmptyMatrix(1, 4)
-	example.Cell[0][0] = 1; example.Cell[0][1] = 1000; example.Cell[0][2] = 4; example.Cell[0][3] = 0
-	example.Hprint("now I have a house with 1000 square feet, 4 bedrooms and is a brand new house")
-
-
-
-	result := LKmath.NormalEquation(X, y)
-	result.Hprint("the result is :")
-	priceOfExampleHouse :=LKmath.MatrixMultiplication(example, result)
-	priceOfExampleHouse.Hprint("predicted price of example house is :")
-
-
-
-	regularizedResult := LKmath.RegularizedNormalEquation(X, y, 0.001)
-	regularizedResult.Hprint("the regularized result is :")
-	priceOfRegularizedExampleHouse :=LKmath.MatrixMultiplication(example, regularizedResult)
-	priceOfRegularizedExampleHouse.Hprint("regularized predicted price of example house is :")
+	//X :=LKmath.NewEmptyMatrix(5,4)
+	////features of houses
+	////-----x0-------------size----------bedrooms-----------age-------
+	//X.Cell[0][0]=1;	X.Cell[0][1]=2104; X.Cell[0][2]=5;X.Cell[0][3]=45
+	//X.Cell[1][0]=1; X.Cell[1][1]=1416; X.Cell[1][2]=3;X.Cell[1][3]=40
+	//X.Cell[2][0]=1; X.Cell[2][1]=1534; X.Cell[2][2]=3;X.Cell[2][3]=30
+	//X.Cell[3][0]=1; X.Cell[3][1]= 850; X.Cell[3][2]=2;X.Cell[3][3]=36
+	//X.Cell[4][0]=1; X.Cell[4][1]=1300; X.Cell[4][2]=4;X.Cell[4][3]=50
+	//
+	//
+	//
+	//X.Hprint("features of houses (X):")
+	//
+	//a := LKmath.Determinant(LKmath.MatrixMultiplication(LKmath.TransposedMatrix(X), X))
+	//fmt.Printf("%v\n", a)
+	//
+	//
+	//y :=LKmath.NewEmptyMatrix(5,1)
+	////--price of houses
+	//y.Cell[0][0]=460
+	//y.Cell[1][0]=232
+	//y.Cell[2][0]=315
+	//y.Cell[3][0]=178
+	//y.Cell[4][0]=220
+	//y.Hprint("price of each house are")
+	//
+	//
+	//
+	//example :=LKmath.NewEmptyMatrix(1, 4)
+	//example.Cell[0][0] = 1; example.Cell[0][1] = 1000; example.Cell[0][2] = 4; example.Cell[0][3] = 0
+	//example.Hprint("now I have a house with 1000 square feet, 4 bedrooms and is a brand new house")
+	//
+	//
+	//
+	//result := LKmath.NormalEquation(X, y)
+	//result.Hprint("the result is :")
+	//priceOfExampleHouse :=LKmath.MatrixMultiplication(example, result)
+	//priceOfExampleHouse.Hprint("predicted price of example house is :")
+	//
+	//
+	//
+	//regularizedResult := LKmath.RegularizedNormalEquation(X, y, 0.001)
+	//regularizedResult.Hprint("the regularized result is :")
+	//priceOfRegularizedExampleHouse :=LKmath.MatrixMultiplication(example, regularizedResult)
+	//priceOfRegularizedExampleHouse.Hprint("regularized predicted price of example house is :")
 
 
 	//A := LKmath.NewEmptyMatrix(3, 4)
@@ -126,14 +126,14 @@ func main() {
 
 
 /*----------------------------------------------test of gradient decent-----------------------------------------------*/
-
-	startParameter := LKmath.NewEmptyMatrix(4, 1)
-	startParameter.Cell[0][0] = 175
-	startParameter.Cell[1][0] = 0.01
-	startParameter.Cell[2][0] = 76
-	startParameter.Cell[3][0] = -7
-	parameter :=LKmath.NormalGradientDecent(X, y, 0.0000005,startParameter, 10000000)
-	parameter.Hprint("final result is: ")
+	//
+	//startParameter := LKmath.NewEmptyMatrix(4, 1)
+	//startParameter.Cell[0][0] = 0
+	//startParameter.Cell[1][0] = 0
+	//startParameter.Cell[2][0] = 0
+	//startParameter.Cell[3][0] = 0
+	//parameter :=LKmath.LinearRegressionGradientDecent(X, y, 0.0000005,startParameter, 10000000000)
+	//parameter.Hprint("final result is: ")
 
 
 
@@ -151,27 +151,40 @@ func main() {
 	//gradientDecentResult.Cell[2][0] =7.068752
 	//gradientDecentResult.Cell[3][0] =-0.071219
 	//
-	testResult :=LKmath.MatrixMultiplication(X, parameter)
-	testResult.Hprint("test result is: ")
+	//testResult :=LKmath.MatrixMultiplication(X, parameter)
+	//testResult.Hprint("test result is: ")
 
 	//
 
+/*-------------------------------------------test of logistic regression --------------------------------------------*/
 
 
+//create data
 
 
+	X:=LKmath.NewRandomMatrix(2,20, 0, 10)
+	y:=LKmath.NewEmptyMatrix(1,20)
 
+	for i :=0; i <20; i++{
+		if 1*X.Cell[0][i] + 6* X.Cell[1][i] >35{
+			y.Cell[0][i]=1
+		}
+	}
 
+	X.Hprint("X is: ")
+	y.Hprint("y is: ")
 
+	w :=LKmath.NewEmptyMatrix(2, 1)
+	w.Cell[0][0]=1
+	w.Cell[1][0]=6
 
+	Parameter :=LKmath.NodeParameter{W:w,B: -35}
+	result :=LKmath.YHat(X, Parameter)
+	result.Hprint("yHat is: ")
 
-
-
-
-
-
-
-
+	//
+	//parameter :=LKmath.LogisticRegressionGradientDecent(X, y, 0.000005,startParameter,100000000)
+	//parameter.Hprint("final parameter is ")
 
 
 

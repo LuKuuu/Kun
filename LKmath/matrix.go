@@ -494,7 +494,7 @@ func MatrixSubtraction(a Matrix, b Matrix)Matrix{
 
 func(this *Matrix)Update(newMatrix Matrix){
 	if this.Row != newMatrix.Row || this.Column != newMatrix.Column{
-		fmt.Printf("Notice: format will be changed\n")
+		panic("Notice: format will be changed\n")
 		this.Column = newMatrix.Column
 		this.Row = newMatrix.Row
 	}
@@ -511,6 +511,9 @@ func(this *Matrix)Update(newMatrix Matrix){
 	this.Cell = data
 
 }
+
+
+/*------------------------------------------------------------squeeze--------------------------------------------------*/
 
 func SqueezedSumRowMatrix(m Matrix)Matrix{
 
@@ -534,7 +537,6 @@ func SqueezedSumRowMatrix(m Matrix)Matrix{
 
 	return matrix
 }
-
 
 
 func SqueezedAverageRowMatrix(m Matrix)Matrix{
@@ -595,6 +597,8 @@ func SqueezedMinRowMatrix(m Matrix)Matrix{
 }
 
 
+
+
 func AbsMatrix(m Matrix)Matrix{
 	var data [][]float64
 	for i := 0; i < m.Row; i++ {
@@ -614,4 +618,16 @@ func AbsMatrix(m Matrix)Matrix{
 }
 
 
+func Sum(m Matrix)float64{
+	sum := 0.0
+	for i := 0; i < m.Row; i++ {
+		for j := 0; j < m.Column; j++ {
+			sum += m.Cell[i][j]
+		}
+	}
+	return sum
+}
 
+func Average(m Matrix)float64{
+	return Sum(m)/float64(m.Row * m.Column)
+}
