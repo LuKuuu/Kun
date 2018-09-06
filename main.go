@@ -179,8 +179,11 @@ func main() {
 	w.Cell[1][0]=6
 
 	Parameter :=LKmath.NodeParameter{W:w,B: -35}
-	result :=LKmath.YHat(X, Parameter)
-	result.Hprint("yHat is: ")
+	yHat :=LKmath.YHat(X, Parameter)
+	yHat.Hprint("yHat is: ")
+
+	lossFunction:=LKmath.LogisticRegressionLossFunctionForMatrix(yHat, y)
+	lossFunction.Hprint("loss function for each parameter is: ")
 
 	//
 	//parameter :=LKmath.LogisticRegressionGradientDecent(X, y, 0.000005,startParameter,100000000)

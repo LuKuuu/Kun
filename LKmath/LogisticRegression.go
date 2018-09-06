@@ -92,6 +92,14 @@ func YHat(X Matrix, parameter NodeParameter)Matrix{
 func LogisticRegressionLossFunction(yHat float64, y float64)float64{
 	return -(y * math.Log(yHat))+ (1-y)*(math.Log(1-yHat))
 }
+func LogisticRegressionLossFunctionForMatrix(yHatMatrix Matrix, yMatrix Matrix)Matrix{
+	result :=NewEmptyMatrix(1, yHatMatrix.Column)
+	for i := 0; i < yHatMatrix.Column; i ++{
+		result.Cell[0][i] = LogisticRegressionLossFunction(yHatMatrix.Cell[0][i], yMatrix.Cell[0][i])
+	}
+	return result
+}
+
 
 func DerivativeOfLogisticRegressionLossFunction(yHat float64, y float64)float64{
 	return -(y/yHat)+((1-y)/1-yHat)
