@@ -162,10 +162,12 @@ func main() {
 //create data
 
 
-	X:=LKmath.NewRandomMatrix(2,20, 0, 10)
-	y:=LKmath.NewEmptyMatrix(1,20)
+	n := 10
 
-	for i :=0; i <20; i++{
+	X:=LKmath.NewRandomMatrix(2,n, 0, 10)
+	y:=LKmath.NewEmptyMatrix(1,n)
+
+	for i :=0; i <n; i++{
 		if 1*X.Cell[0][i] + 6* X.Cell[1][i] >35{
 			y.Cell[0][i]=1
 		}
@@ -178,12 +180,20 @@ func main() {
 	w.Cell[0][0]=1
 	w.Cell[1][0]=6
 
-	Parameter :=LKmath.NodeParameter{W:w,B: -35}
+	Parameter :=LKmath.NodeParameter{W:w,B: -33}
 	yHat :=LKmath.YHat(X, Parameter)
 	yHat.Hprint("yHat is: ")
 
 	lossFunction:=LKmath.LogisticRegressionLossFunctionForMatrix(yHat, y)
-	lossFunction.Hprint("loss function for each parameter is: ")
+	lossFunction.Hprint("loss function result for each example are: ")
+
+	lossFunctionDerivative :=LKmath.DerivativeOfLogisticRegressionLossFunctionForMatrix(yHat, y)
+	lossFunctionDerivative.Hprint("loss function derivatives are: ")
+
+	fmt.Printf("cost function result is: %v\n", LKmath.Average(lossFunction) )
+	fmt.Printf("average derivative is :%v\n ", LKmath.Average(lossFunctionDerivative))
+
+
 
 	//
 	//parameter :=LKmath.LogisticRegressionGradientDecent(X, y, 0.000005,startParameter,100000000)

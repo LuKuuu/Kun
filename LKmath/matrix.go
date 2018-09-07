@@ -115,6 +115,7 @@ func NewCopyMatrix(m Matrix)Matrix{
 
 
 
+
 func NewRandomMatrix(row int, column int, min float64, max float64)Matrix{
 
 	rand.Seed(time.Now().UnixNano())
