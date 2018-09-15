@@ -173,6 +173,9 @@ func main() {
 		}
 	}
 
+	X.Cell[0][0]=5
+	X.Cell[1][0]=9.84
+
 	X.Hprint("X is: ")
 	y.Hprint("y is: ")
 
@@ -180,7 +183,7 @@ func main() {
 	w.Cell[0][0]=1
 	w.Cell[1][0]=6
 
-	Parameter :=LKmath.NodeParameter{W:w,B: -33}
+	Parameter :=LKmath.NodeParameter{W:w,B: -20}
 	yHat :=LKmath.YHat(X, Parameter)
 	yHat.Hprint("yHat is: ")
 
@@ -190,14 +193,20 @@ func main() {
 	lossFunctionDerivative :=LKmath.DerivativeOfLogisticRegressionLossFunctionForMatrix(yHat, y)
 	lossFunctionDerivative.Hprint("loss function derivatives are: ")
 
+
+	finalDerivative :=LKmath.FinalDerivativeOfLogisticRegressionForMatrix(yHat, y)
+	finalDerivative.Hprint("final derivative is: ")
+
 	fmt.Printf("cost function result is: %v\n", LKmath.Average(lossFunction) )
-	fmt.Printf("average derivative is :%v\n ", LKmath.Average(lossFunctionDerivative))
+	fmt.Printf("average final derivative is :%v\n ", LKmath.Average(finalDerivative))
 
 
-
+	//fmt.Printf("%v", math.Log(1))
 	//
 	//parameter :=LKmath.LogisticRegressionGradientDecent(X, y, 0.000005,startParameter,100000000)
 	//parameter.Hprint("final parameter is ")
+
+	//fmt.Printf("%v",LKmath.LogisticRegressionLossFunction(0,0))
 
 
 

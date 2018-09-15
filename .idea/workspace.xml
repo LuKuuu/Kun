@@ -19,8 +19,8 @@
       <file leaf-file-name="matrix.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/LKmath/matrix.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="711">
-              <caret line="120" column="17" lean-forward="true" selection-start-line="120" selection-end-line="121" />
+            <state relative-caret-position="211">
+              <caret line="174" column="35" selection-start-line="174" selection-start-column="35" selection-end-line="174" selection-end-column="35" />
             </state>
           </provider>
         </entry>
@@ -28,8 +28,8 @@
       <file leaf-file-name="LogisticRegression.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/LKmath/LogisticRegression.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="154">
-              <caret line="104" column="37" selection-start-line="104" selection-start-column="37" selection-end-line="104" selection-end-column="37" />
+            <state relative-caret-position="110">
+              <caret line="125" column="5" selection-start-line="125" selection-start-column="5" selection-end-line="125" selection-end-column="5" />
               <folding>
                 <element signature="e#16#41#0" expanded="true" />
               </folding>
@@ -40,7 +40,7 @@
       <file leaf-file-name="log.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../../../../../src/math/log.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1">
+            <state relative-caret-position="-66">
               <caret line="79" column="5" selection-start-line="79" selection-start-column="5" selection-end-line="79" selection-end-column="5" />
             </state>
           </provider>
@@ -49,10 +49,10 @@
       <file leaf-file-name="main.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="73">
-              <caret line="182" column="47" selection-start-line="182" selection-start-column="47" selection-end-line="182" selection-end-column="47" />
+            <state relative-caret-position="308">
+              <caret line="208" column="43" lean-forward="true" selection-start-line="208" selection-end-line="209" />
               <folding>
-                <marker date="1536331052287" expanded="true" signature="3627:3946" ph="..." />
+                <marker date="1537053541919" expanded="true" signature="3627:3946" ph="..." />
               </folding>
             </state>
           </provider>
@@ -86,6 +86,7 @@
       <find>Hp</find>
       <find>format will</find>
       <find>yHat</find>
+      <find>Hprint</find>
     </findStrings>
   </component>
   <component name="GOROOT" path="D:\Go" />
@@ -98,8 +99,8 @@
         <option value="$PROJECT_DIR$/LKmath/Functions.go" />
         <option value="$PROJECT_DIR$/LKmath/functions.go" />
         <option value="$PROJECT_DIR$/LKmath/linearRegression.go" />
-        <option value="$PROJECT_DIR$/LKmath/matrix.go" />
         <option value="$PROJECT_DIR$/LKmath/LogisticRegression.go" />
+        <option value="$PROJECT_DIR$/LKmath/matrix.go" />
         <option value="$PROJECT_DIR$/main.go" />
       </list>
     </option>
@@ -116,8 +117,8 @@
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-10" />
     <option name="y" value="-10" />
-    <option name="width" value="980" />
-    <option name="height" value="1090" />
+    <option name="width" value="1939" />
+    <option name="height" value="1099" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -150,7 +151,7 @@
     <property name="DefaultGoTemplateProperty" value="Go File" />
     <property name="go.gopath.indexing.explicitly.defined" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../supertech/server" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
@@ -177,6 +178,14 @@
       <package value="github.com/LuKuuu/Kun" />
       <directory value="$PROJECT_DIR$/" />
     </configuration>
+    <configuration name="go build LogisticRegression.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="Kun" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <go_parameters value="-i" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/LKmath/LogisticRegression.go" />
+      <directory value="$PROJECT_DIR$/" />
+    </configuration>
     <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="Kun" />
       <working_directory value="$PROJECT_DIR$/" />
@@ -199,10 +208,12 @@
       <item itemvalue="Go Build.go build main.go" />
       <item itemvalue="Go Build.go build matrix.go" />
       <item itemvalue="Go Build.go build Functions.go" />
+      <item itemvalue="Go Build.go build LogisticRegression.go" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Go Build.go build main.go" />
+        <item itemvalue="Go Build.go build LogisticRegression.go" />
         <item itemvalue="Go Build.go build matrix.go" />
         <item itemvalue="Go Build.go build Functions.go" />
       </list>
@@ -218,11 +229,11 @@
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.5529412" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.43398693" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.503268" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.31895426" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -247,7 +258,7 @@
           <option name="timeStamp" value="17" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="21" />
+      <option name="time" value="25" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -286,12 +297,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1188">
           <caret line="105" column="9" lean-forward="true" selection-start-line="105" selection-start-column="9" selection-end-line="105" selection-end-column="9" />
-          <folding>
-            <element signature="n#!!block;n#LinearRegressionLossFunction#0" />
-            <element signature="n#!!block;n#LinearRegressionCostFunction#0" />
-            <element signature="n#!!block;n#NormalEquation#0" />
-            <element signature="n#!!block;n#RegularizedNormalEquation#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -307,7 +312,7 @@
         <state relative-caret-position="3388">
           <caret line="158" lean-forward="true" selection-start-line="158" selection-end-line="158" />
           <folding>
-            <marker date="1536331052287" expanded="true" signature="3627:3946" ph="..." />
+            <marker date="1537053541919" expanded="true" signature="3627:3946" ph="..." />
           </folding>
         </state>
       </provider>
@@ -337,12 +342,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2640">
           <caret line="172" column="87" selection-start-line="172" selection-start-column="87" selection-end-line="172" selection-end-column="87" />
-          <folding>
-            <element signature="n#!!block;n#LinearRegressionLossFunction#0" />
-            <element signature="n#!!block;n#LinearRegressionCostFunction#0" />
-            <element signature="n#!!block;n#NormalEquation#0" />
-            <element signature="n#!!block;n#RegularizedNormalEquation#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -358,7 +357,7 @@
         <state relative-caret-position="2838">
           <caret line="133" column="34" lean-forward="true" selection-start-line="133" selection-start-column="34" selection-end-line="133" selection-end-column="34" />
           <folding>
-            <marker date="1536331052287" expanded="true" signature="3627:3946" ph="..." />
+            <marker date="1537053541919" expanded="true" signature="3627:3946" ph="..." />
           </folding>
         </state>
       </provider>
@@ -388,12 +387,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="750">
           <caret line="33" column="5" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
-          <folding>
-            <element signature="n#!!block;n#LinearRegressionLossFunction#0" />
-            <element signature="n#!!block;n#LinearRegressionCostFunction#0" />
-            <element signature="n#!!block;n#NormalEquation#0" />
-            <element signature="n#!!block;n#RegularizedNormalEquation#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -604,45 +597,39 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="22">
           <caret line="15" column="69" lean-forward="true" selection-start-line="15" selection-start-column="69" selection-end-line="15" selection-end-column="69" />
-          <folding>
-            <element signature="n#!!block;n#LinearRegressionLossFunction#0" />
-            <element signature="n#!!block;n#LinearRegressionCostFunction#0" />
-            <element signature="n#!!block;n#NormalEquation#0" />
-            <element signature="n#!!block;n#RegularizedNormalEquation#0" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../../../../src/math/log.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1">
+        <state relative-caret-position="-66">
           <caret line="79" column="5" selection-start-line="79" selection-start-column="5" selection-end-line="79" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/LKmath/matrix.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="711">
-          <caret line="120" column="17" lean-forward="true" selection-start-line="120" selection-end-line="121" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/LKmath/LogisticRegression.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="154">
-          <caret line="104" column="37" selection-start-line="104" selection-start-column="37" selection-end-line="104" selection-end-column="37" />
+        <state relative-caret-position="110">
+          <caret line="125" column="5" selection-start-line="125" selection-start-column="5" selection-end-line="125" selection-end-column="5" />
           <folding>
             <element signature="e#16#41#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/LKmath/matrix.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="174" column="35" selection-start-line="174" selection-start-column="35" selection-end-line="174" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="73">
-          <caret line="182" column="47" selection-start-line="182" selection-start-column="47" selection-end-line="182" selection-end-column="47" />
+        <state relative-caret-position="308">
+          <caret line="208" column="43" lean-forward="true" selection-start-line="208" selection-end-line="209" />
           <folding>
-            <marker date="1536331052287" expanded="true" signature="3627:3946" ph="..." />
+            <marker date="1537053541919" expanded="true" signature="3627:3946" ph="..." />
           </folding>
         </state>
       </provider>

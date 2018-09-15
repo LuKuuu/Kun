@@ -118,7 +118,7 @@ func NewCopyMatrix(m Matrix)Matrix{
 
 func NewRandomMatrix(row int, column int, min float64, max float64)Matrix{
 
-	rand.Seed(time.Now().UnixNano())
+	//rand.Seed(time.Now().UnixNano())
 
 	if row == 0 || column == 0{
 		panic("index error")
@@ -172,7 +172,7 @@ func (ma *Matrix)Hprint(info string){
 	for i := 0; i < ma.Row; i++ {
 		s := ""
 		for j := 0; j < ma.Column; j++ {
-			s = s + fmt.Sprintf("%f ",ma.Cell[i][j])
+			s = s + fmt.Sprintf("%f\t",ma.Cell[i][j])
 		}
 		fmt.Printf("%s\n", s)
 
@@ -517,6 +517,30 @@ func(this *Matrix)Update(newMatrix Matrix){
 /*------------------------------------------------------------squeeze--------------------------------------------------*/
 
 func SqueezedSumRowMatrix(m Matrix)Matrix{
+
+	var data [][]float64
+	rowData := make([]float64, 0, m.Row)
+	for i := 0; i < m.Column; i ++{
+		cellResult := 0.0
+		for j :=0; j < m.Row; j++{
+			cellResult += m.Cell[j][i]
+		}
+		rowData = append(rowData,cellResult)
+	}
+	data = append(data,rowData)
+
+
+	matrix :=Matrix{
+		Row:1,
+		Column:m.Column,
+		Cell:data,
+	}
+
+	return matrix
+}
+
+
+func SqueezedSumColumnMatrix(m Matrix)Matrix{
 
 	var data [][]float64
 	rowData := make([]float64, 0, m.Row)

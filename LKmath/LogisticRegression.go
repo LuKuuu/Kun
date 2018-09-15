@@ -70,11 +70,11 @@ func DerivativeOfSigmoidFunction(x float64)float64{
 	return SigmoidFunction(x) * (1- SigmoidFunction(x))
 }
 
-func DerivativeOfSigmoidFunctionForMatrix(m Matrix)Matrix{
-	resultMatrix := NewCopyMatrix(m)
-	for i := 0; i < m.Row; i++{
-		for j := 0; j < m.Column; j ++{
-			resultMatrix.Cell[i][j] = DerivativeOfSigmoidFunction(m.Cell[i][j])
+func DerivativeOfSigmoidFunctionForMatrix(yHatMatrix Matrix)Matrix{
+	resultMatrix := NewCopyMatrix(yHatMatrix)
+	for i := 0; i < yHatMatrix.Row; i++{
+		for j := 0; j < yHatMatrix.Column; j ++{
+			resultMatrix.Cell[i][j] = (yHatMatrix.Cell[i][j]) * (1 - yHatMatrix.Cell[i][j])
 		}
 	}
 	return resultMatrix
@@ -87,10 +87,19 @@ func YHat(X Matrix, parameter NodeParameter)Matrix{
 	return SigmoidFunctionForMatrix(MatrixAdd(MatrixMultiplication(TransposedMatrix(parameter.W), X), bMatrix))
 }
 
+
 //loss/cost functions
 
 func LogisticRegressionLossFunction(yHat float64, y float64)float64{
-	return -(y * math.Log(yHat)+ (1-y)*(math.Log(1-yHat)))
+
+	//return -(y * math.Log(yHat)+ (1-y)*(math.Log(1-yHat)))
+	// this sometime will make a stupid return "Not a Number" because it will calculate 0 * inf first
+
+	if y == 0{
+		return math.Log(1-yHat)
+	}else{
+		return math.Log(yHat)
+	}
 }
 func LogisticRegressionLossFunctionForMatrix(yHatMatrix Matrix, yMatrix Matrix)Matrix{
 	result :=NewEmptyMatrix(1, yHatMatrix.Column)
@@ -102,7 +111,16 @@ func LogisticRegressionLossFunctionForMatrix(yHatMatrix Matrix, yMatrix Matrix)M
 
 
 func DerivativeOfLogisticRegressionLossFunction(yHat float64, y float64)float64{
-	return -(y/yHat)+((1-y)/(1-yHat))
+
+
+	//return -(y/yHat)+((1-y)/(1-yHat))
+	//this will result Not a Number sometime because it will calculate 0/0 instead of ignoring the part with numerator == 0
+
+	if y == 0{
+		return -((1-y)/(1-yHat))
+	}else{
+		return -(y/yHat)
+	}
 }
 
 func DerivativeOfLogisticRegressionLossFunctionForMatrix(yHatMatrix Matrix, yMatrix Matrix)Matrix{
@@ -111,6 +129,24 @@ func DerivativeOfLogisticRegressionLossFunctionForMatrix(yHatMatrix Matrix, yMat
 		result.Cell[0][i] = DerivativeOfLogisticRegressionLossFunction(yHatMatrix.Cell[0][i], yMatrix.Cell[0][i])
 	}
 	return result
+}
+
+func FinalDerivativeOfLogisticRegressionForMatrix(yHatMatrix Matrix, yMatrix Matrix)Matrix {
+
+	if yHatMatrix.Column != yMatrix.Column{
+		panic("FinalDerivativeOfLogisticRegressionForMatrix: format error")
+	}
+	da := DerivativeOfLogisticRegressionLossFunctionForMatrix(yHatMatrix, yMatrix)
+	dl := DerivativeOfSigmoidFunctionForMatrix(yHatMatrix)
+
+	result :=NewEmptyMatrix(1, da.Column)
+	for i:=0; i< da.Column; i++{
+		result.Cell[0][i] = da.Cell[0][i] * dl.Cell[0][i]
+	}
+
+	return result
+
+
 }
 
 func LogisticRegressionCostFunction(yHatMatrix *Matrix, yMatrix *Matrix)float64{
