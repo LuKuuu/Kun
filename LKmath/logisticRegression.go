@@ -3,6 +3,8 @@ package LKmath
 import (
 	"math"
 	"fmt"
+	"math/rand"
+	"time"
 )
 /*--------------------------------------------------example--------------------------------------------------*/
 
@@ -20,12 +22,28 @@ here are the relationship between them
 
  */
 
-/*--------------------------------------------------logical regression--------------------------------------------------*/
+/*--------------------------------------------------Node---------------------------------------------------------*/
+
 
 
 type NodeParameter struct {
 	W Matrix
 	B float64
+}
+
+func NewEmptyNode(featureNum int)NodeParameter{
+	return NodeParameter{NewValuedMatrix(1,featureNum, 0), 0}
+}
+
+func NewValuedNode(featureNum int, value float64)NodeParameter{
+	return NodeParameter{NewValuedMatrix(1,featureNum, value), value}
+}
+
+func NewRandomNode(intialize bool, featureNum int, max float64, min float64)NodeParameter {
+	if intialize{
+		rand.Seed(time.Now().Unix())
+	}
+	return NodeParameter{NewRandomMatrix(intialize, 1, featureNum, max, min), ((max - min) *rand.Float64()) + min}
 }
 
 func (this *NodeParameter)Update(np NodeParameter){
@@ -35,7 +53,7 @@ func (this *NodeParameter)Update(np NodeParameter){
 
 func (this *NodeParameter)Hprint(info string){
 	fmt.Printf(info+"\n")
-	fmt.Printf("W is :\n")
+	fmt.Printf("W:\n")
 	for i := 0; i < this.W.Row; i++ {
 		s := ""
 		for j := 0; j < this.W.Column; j++ {
@@ -45,7 +63,7 @@ func (this *NodeParameter)Hprint(info string){
 
 	}
 
-	fmt.Printf("B is : %f \n", this.B)
+	fmt.Printf("B: %f \n", this.B)
 
 	fmt.Println()
 }
