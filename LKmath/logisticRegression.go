@@ -84,7 +84,7 @@ func DerivativeOfSigmoidFunctionForMatrix(yHatMatrix Matrix)Matrix{
 func YHat(X Matrix, parameter NodeParameter)Matrix{
 	bMatrix := NewValuedMatrix(1, X.Column, parameter.B)
 	//yHat = sigmoid(transpose(W)*X + b)
-	return SigmoidFunctionForMatrix(MatrixAdd(MatrixMultiplication(TransposedMatrix(parameter.W), X), bMatrix))
+	return SigmoidFunctionForMatrix(MatrixAddition(MatrixMultiplication(parameter.W, X), bMatrix))
 }
 
 
@@ -96,9 +96,9 @@ func LogisticRegressionLossFunction(yHat float64, y float64)float64{
 	// this sometime will make a stupid return "Not a Number" because it will calculate 0 * inf first
 
 	if y == 0{
-		return math.Log(1-yHat)
+		return - math.Log(1-yHat)
 	}else{
-		return math.Log(yHat)
+		return - math.Log(yHat)
 	}
 }
 func LogisticRegressionLossFunctionForMatrix(yHatMatrix Matrix, yMatrix Matrix)Matrix{
@@ -117,9 +117,9 @@ func DerivativeOfLogisticRegressionLossFunction(yHat float64, y float64)float64{
 	//this will result Not a Number sometime because it will calculate 0/0 instead of ignoring the part with numerator == 0
 
 	if y == 0{
-		return -((1-y)/(1-yHat))
+		return 1/(1-yHat)
 	}else{
-		return -(y/yHat)
+		return -1/yHat
 	}
 }
 
@@ -165,39 +165,22 @@ func LogisticRegressionCostFunction(yHatMatrix *Matrix, yMatrix *Matrix)float64{
 
 
 
-func derivativeOfLogisticalRegressionCostFunction(X Matrix, yMatrix Matrix, parameter NodeParameter)NodeParameter{
+func DerivativeOfLogisticalRegressionCostFunction(X Matrix, yMatrix Matrix, parameter NodeParameter)NodeParameter{
 
-	bMatrix :=NewValuedMatrix(1, yMatrix.Column, parameter.B) //1*m matrix
 
-	//z here is an 1 * m Matrix equals to Wt * X + b
-	z := MatrixAdd(MatrixMultiplication(TransposedMatrix(parameter.W), X), bMatrix)
-	yHatMatrix := SigmoidFunctionForMatrix(z)
+	yHatMatrix :=YHat(X, parameter)
 
-	//da here is the derivative part in loss function
-	da := DerivativeOfLogisticRegressionLossFunctionForMatrix(yHatMatrix, yMatrix)
+	finalDerivative :=FinalDerivativeOfLogisticRegressionForMatrix(yHatMatrix, yMatrix)
 
-	//dl here is the derivative part in sigmoid function
-	dl := DerivativeOfSigmoidFunctionForMatrix(z)
+	W := ScalarMatrix(MatrixMultiplication(finalDerivative, TransposeMatrix(X)), 1/float64(X.Column))
 
-	//derivative here is an 1 * m Matrix before ...
-	derivative := NewEmptyMatrix(1, yHatMatrix.Column)
+	B :=Average(finalDerivative)
 
-	for i := 0; i < derivative.Column; i ++{
-		derivative.Cell[0][i] = da.Cell[0][i] * dl.Cell[0][i]
-	}
-
-	//for each parameter their derivative is derivative * Xt
-
-	parameterDerivative := NodeParameter{}
-
-	parameterDerivative.B = Average(derivative)
-	parameterDerivative.W = MatrixTimesRealNumber(MatrixMultiplication(derivative, TransposedMatrix(X)), 1/float64(yHatMatrix.Column))
-	parameterDerivative.Hprint("parameterDerivative")
-
-	return parameterDerivative
-
+	return NodeParameter{W, B}
 
 }
+
+/*---------------------------------gradient decent------------------------------*/
 
 func LogisticRegressionGradientDecent(X Matrix, y Matrix, alpha float64, startParameter NodeParameter, learningTimes int)NodeParameter{
 
@@ -207,25 +190,27 @@ func LogisticRegressionGradientDecent(X Matrix, y Matrix, alpha float64, startPa
 	//			  		and a	parameter b we want to start the gradient decent
 	//alpha : learning rate (it should be carefully chose)
 
-	if X.Row != startParameter.W.Row || X.Column != y.Column{
+	if X.Row != startParameter.W.Column || X.Column != y.Column{
 		panic("format error")
 	}
+
+	fmt.Printf("starting logistic regression\n")
 
 
 	parameterW := NewCopyMatrix(startParameter.W)
 	ParameterB := startParameter.B
 	parameter := NodeParameter{parameterW, ParameterB}
-	derivative := NodeParameter{NewEmptyMatrix(1, parameterW.Column), 0}
+	derivative := NodeParameter{NewEmptyMatrix(parameterW.Row, parameterW.Column), 0}
 
 	times := 0
 
 	for{
 		times ++
-		derivative.Update(derivativeOfLogisticalRegressionCostFunction(X, y,parameter))
-		if times%5 == 0{
-			fmt.Printf("progress : %d%%\n", times/learningTimes)
-			derivative.Hprint("current derivative is :")
-			parameter.Hprint("and the parameter is: ")
+		derivative.Update(DerivativeOfLogisticalRegressionCostFunction(X, y,parameter))
+		if times%500000 == 0{
+			fmt.Printf("progress : %f%%\n", float64(times)/float64(learningTimes))
+			derivative.Hprint("current derivatives are :")
+			parameter.Hprint("and the parameters are: ")
 
 		}
 
@@ -248,7 +233,7 @@ func LogisticRegressionGradientDecent(X Matrix, y Matrix, alpha float64, startPa
 		if times > learningTimes{
 			break
 		}
-		parameter.Update(NodeParameter{W :MatrixSubtraction(parameter.W,MatrixTimesRealNumber(derivative.W,alpha)), B:(parameter.B - alpha * derivative.B)})
+		parameter.Update(NodeParameter{W :MatrixSubtraction(parameter.W, ScalarMatrix(derivative.W,alpha)), B:parameter.B - alpha * derivative.B})
 		//parameter.Hprint(strconv.Itoa(times)+" times parameter is :")
 
 	}

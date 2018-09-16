@@ -3,10 +3,12 @@ package LKmath
 import (
 	"sync"
 	"math/rand"
-	"fmt"
 	"time"
+	"fmt"
 	"math"
 )
+
+// this packet includes functions for creating and calculating matrix
 
 type Matrix struct{
 	Row 		int
@@ -15,12 +17,8 @@ type Matrix struct{
 	mu			sync.RWMutex
 }
 
-const(
-	INT  = 0
-	FLOAT = 1
-)
-
-
+/*-----------------------------------------functions for creating matrix----------------------------------------------*/
+//New Empty Matrix will create a Matrix filled with 0
 func NewEmptyMatrix(row int, column int)Matrix{
 
 	if row == 0 || column == 0{
@@ -46,6 +44,7 @@ func NewEmptyMatrix(row int, column int)Matrix{
 
 }
 
+//New Valued Matrix will create a Matrix filled with set value
 func NewValuedMatrix(row int, column int, value float64)Matrix{
 
 	if row == 0 || column == 0{
@@ -71,7 +70,7 @@ func NewValuedMatrix(row int, column int, value float64)Matrix{
 
 }
 
-
+//New Identity Matrix will create a size by size Identity Matrix
 func NewIdentityMatrix(size int)Matrix{
 	var data [][]float64
 	for i := 0; i < size; i++ {
@@ -94,7 +93,7 @@ func NewIdentityMatrix(size int)Matrix{
 	return matrix
 }
 
-
+//New Copy Matrix will copy a Matrix and create a new one
 func NewCopyMatrix(m Matrix)Matrix{
 	var data [][]float64
 	for i := 0; i < m.Row; i++ {
@@ -113,12 +112,13 @@ func NewCopyMatrix(m Matrix)Matrix{
 	return matrix
 }
 
+//New Random Matrix will create a random matrix
+//if initialize is false, the matrix will always be the same
+func NewRandomMatrix(initialize bool, row int, column int, min float64, max float64)Matrix{
 
-
-
-func NewRandomMatrix(row int, column int, min float64, max float64)Matrix{
-
-	//rand.Seed(time.Now().UnixNano())
+	if initialize {
+		rand.Seed(time.Now().UnixNano())
+	}
 
 	if row == 0 || column == 0{
 		panic("index error")
@@ -144,8 +144,11 @@ func NewRandomMatrix(row int, column int, min float64, max float64)Matrix{
 }
 
 
+/*---------------------------------------functions for recreating matrix----------------------------------------------*/
 
-func MatrixRandom(m Matrix, min float64, max float64)Matrix{
+
+//Matrix Random will make an existing matrix become a random matrix
+func RandomMatrix(m Matrix, min float64, max float64)Matrix{
 	rand.Seed(time.Now().UnixNano())
 
 	for i := 0; i < m.Row; i++ {
@@ -156,98 +159,48 @@ func MatrixRandom(m Matrix, min float64, max float64)Matrix{
 	return m
 }
 
-
-func (ma *Matrix)MatrixSigmoid()Matrix{
-	for i := 0; i < ma.Row; i++ {
-		for j := 0; j < ma.Column; j++ {
-			ma.Cell[i][j] =SigmoidFunction(ma.Cell[i][j])
-		}
-	}
-	return *ma
-}
-
-
-func (ma *Matrix)Hprint(info string){
-	fmt.Printf(info+"\n")
-	for i := 0; i < ma.Row; i++ {
-		s := ""
-		for j := 0; j < ma.Column; j++ {
-			s = s + fmt.Sprintf("%f\t",ma.Cell[i][j])
-		}
-		fmt.Printf("%s\n", s)
-
-	}
-
-	fmt.Println()
-}
-
-func MatrixMultiplication(a Matrix, b Matrix)Matrix{
-	if a.Column != b.Row {
-		panic("a.column unequal to b.row, cannot perform multiplication")
-	}
-	result:= NewEmptyMatrix(a.Row, b.Column)
-
-	for i :=0; i < b.Column; i ++{
-		for j := 0; j< a.Row; j++{
-			cellSum := 0.0
-			for k :=0; k< a.Column; k++{
-				cellSum +=a.Cell[j][k] * b.Cell[k][i]
-			}
-			result.Cell[j][i] = cellSum
-		}
-	}
-
-	return result
-
-
-}
-
-func TransposedMatrix(m Matrix)Matrix{
+//return the abstract value of the matrix
+func AbsMatrix(m Matrix)Matrix{
 	var data [][]float64
-	for i := 0; i < m.Column; i++ {
-		rowData := make([]float64, 0, m.Column)
-		for j := 0; j < m.Row; j++ {
-			rowData = append(rowData,m.Cell[j][i])
+	for i := 0; i < m.Row; i++ {
+		rowData := make([]float64, 0, m.Row)
+		for j := 0; j < m.Column; j++ {
+			rowData = append(rowData,math.Abs(m.Cell[i][j]))
 		}
 		data = append(data,rowData)
 	}
 
-	mT :=Matrix{
-		Row:m.Column,
-		Column:m.Row,
+	matrix :=Matrix{
+		Row:m.Row,
+		Column:m.Column,
 		Cell:data,
 	}
-	return mT
+	return matrix
 }
 
-func InverseMatrix(m Matrix)Matrix{
-	if m.Column != m.Row {
-		panic("non-square matrix. cannot perform inverse")
+//update the matrix
+func(this *Matrix)Update(newMatrix Matrix){
+	if this.Row != newMatrix.Row || this.Column != newMatrix.Column{
+		panic("Notice: format will be changed\n")
+		this.Column = newMatrix.Column
+		this.Row = newMatrix.Row
 	}
 
-	det :=Determinant(m)
-
-	if det == 0{
-		fmt.Printf("The determinant is 0, the matrix is not invertible\n")
-		return MoorePenroseInverse(m)
-
+	var data [][]float64
+	for i := 0; i < newMatrix.Row; i++ {
+		rowData := make([]float64, 0, newMatrix.Row)
+		for j := 0; j < newMatrix.Column; j++ {
+			rowData = append(rowData,newMatrix.Cell[i][j])
+		}
+		data = append(data,rowData)
 	}
 
-
-	return MatrixTimesRealNumber(AdjugateMatrix(m), 1/det)
+	this.Cell = data
 
 }
 
 
-func MoorePenroseInverse(m Matrix)Matrix{
-	//todo: add Moore-Penrose Inverse in case the matrix is invertible
-	panic("moore penrose inverse is not available right now")
-}
-
-
-
-
-
+/*---------------------------------------functions for reshaping matrix----------------------------------------------*/
 
 //cut matrix into a new matrix (include both begin value and end value)
 func CutMatrix(m Matrix, rowBegin int, rowEnd int, columnBegin int, columnEnd int)Matrix{
@@ -277,8 +230,7 @@ func CutMatrix(m Matrix, rowBegin int, rowEnd int, columnBegin int, columnEnd in
 	return matrix
 }
 
-
-
+//remove a row
 func RemoveRow(m Matrix, rowIndex int)Matrix{
 
 	if rowIndex >= m.Row{
@@ -307,7 +259,7 @@ func RemoveRow(m Matrix, rowIndex int)Matrix{
 	return matrix
 }
 
-
+//remove a column
 func RemoveColumn(m Matrix, columnIndex int)Matrix{
 
 	if columnIndex >= m.Column{
@@ -336,7 +288,7 @@ func RemoveColumn(m Matrix, columnIndex int)Matrix{
 	return matrix
 }
 
-
+//remove row and column at the same time
 func RemoveRowAndColumn(m Matrix, rowIndex int, columnIndex int)Matrix{
 
 	if rowIndex >= m.Row || columnIndex >= m.Column{
@@ -367,6 +319,207 @@ func RemoveRowAndColumn(m Matrix, rowIndex int, columnIndex int)Matrix{
 }
 
 
+
+
+/*---------------------------------------functions for printing matrix----------------------------------------------*/
+
+// print matrix in a human-readable way together with an info you want to print
+func (ma *Matrix)Hprint(info string){
+	fmt.Printf(info+"\n")
+	for i := 0; i < ma.Row; i++ {
+		s := ""
+		for j := 0; j < ma.Column; j++ {
+			s = s + fmt.Sprintf("%f\t",ma.Cell[i][j])
+		}
+		fmt.Printf("%s\n", s)
+
+	}
+
+	fmt.Println()
+}
+
+//print matrix in detail for better testing
+func (ma *Matrix)Dprint(info string){
+	fmt.Printf(info+"\n")
+	for i := 0; i < ma.Row; i++ {
+		s := ""
+		for j := 0; j < ma.Column; j++ {
+			s = s + fmt.Sprintf("%v\t",ma.Cell[i][j])
+		}
+		fmt.Printf("%s\n", s)
+
+	}
+
+	fmt.Println()
+}
+
+
+/*---------------------------------------functions for calculating matrix----------------------------------------------*/
+
+//multiply Matrix a and Matrix b
+func MatrixMultiplication(a Matrix, b Matrix)Matrix{
+	if a.Column != b.Row {
+		panic("a.column unequal to b.row, cannot perform multiplication")
+	}
+	result:= NewEmptyMatrix(a.Row, b.Column)
+
+	for i :=0; i < b.Column; i ++{
+		for j := 0; j< a.Row; j++{
+			cellSum := 0.0
+			for k :=0; k< a.Column; k++{
+				cellSum +=a.Cell[j][k] * b.Cell[k][i]
+			}
+			result.Cell[j][i] = cellSum
+		}
+	}
+
+	return result
+
+
+}
+
+//return the transposed matrix of m
+func TransposeMatrix(m Matrix)Matrix{
+	var data [][]float64
+	for i := 0; i < m.Column; i++ {
+		rowData := make([]float64, 0, m.Column)
+		for j := 0; j < m.Row; j++ {
+			rowData = append(rowData,m.Cell[j][i])
+		}
+		data = append(data,rowData)
+	}
+
+	mT :=Matrix{
+		Row:m.Column,
+		Column:m.Row,
+		Cell:data,
+	}
+	return mT
+}
+
+//return the inverse matrix of m
+func InverseMatrix(m Matrix)Matrix{
+	if m.Column != m.Row {
+		panic("non-square matrix. cannot perform inverse")
+	}
+
+	det :=Determinant(m)
+
+	if det == 0{
+		fmt.Printf("The determinant is 0, the matrix is not invertible\n")
+		return MoorePenroseInverse(m)
+
+	}
+
+
+	return ScalarMatrix(AdjugateMatrix(m), 1/det)
+
+}
+
+//return the Moore-Penrose inverse matrix of m
+func MoorePenroseInverse(m Matrix)Matrix{
+	//todo: add Moore-Penrose Inverse in case the matrix is invertible
+	panic("moore penrose inverse is not available right now")
+}
+
+//calculate the matrix times a real number
+func ScalarMatrix(m Matrix, rn float64)Matrix{
+	var data [][]float64
+	for i := 0; i < m.Row; i++ {
+		rowData := make([]float64, 0, m.Row)
+		for j := 0; j < m.Column; j++ {
+			rowData = append(rowData,m.Cell[i][j] * rn)
+		}
+		data = append(data,rowData)
+	}
+
+	matrix :=Matrix{
+		Row:m.Row,
+		Column:m.Column,
+		Cell:data,
+	}
+	return matrix
+}
+
+//calculate the adjugate of a matrix
+func AdjugateMatrix(m Matrix)Matrix{
+	var data [][]float64
+	for i := 0; i < m.Row; i++ {
+		rowData := make([]float64, 0, m.Row)
+		for j := 0; j < m.Column; j++ {
+			rowData = append(rowData, adjugatedCell(m, j, i))
+		}
+		data = append(data,rowData)
+	}
+
+	matrix :=Matrix{
+		Row:m.Row,
+		Column:m.Column,
+		Cell:data,
+	}
+	return matrix
+}
+
+func adjugatedCell(m Matrix, rowIndex int, columnIndex int)float64{
+
+	sign := 0.0
+	if rowIndex + columnIndex == 0 || (rowIndex + columnIndex)%2 == 0{
+		sign = 1
+	}else{
+		sign = -1
+	}
+
+	return sign * Determinant(RemoveRowAndColumn(m, rowIndex, columnIndex))
+}
+
+//add two matrices
+func MatrixAddition(a Matrix, b Matrix)Matrix{
+	if a.Row != b.Row || a.Column != b.Column{
+		panic("matrix doesn't fit each other, can't perform adding")
+	}
+	var data [][]float64
+	for i := 0; i < a.Row; i++ {
+		rowData := make([]float64, 0, a.Row)
+		for j := 0; j < a.Column; j++ {
+			rowData = append(rowData,a.Cell[i][j]+b.Cell[i][j])
+		}
+		data = append(data,rowData)
+	}
+
+	matrix :=Matrix{
+		Row:a.Row,
+		Column:a.Column,
+		Cell:data,
+	}
+	return matrix
+}
+
+//subtract two matrices
+func MatrixSubtraction(a Matrix, b Matrix)Matrix{
+	if a.Row != b.Row || a.Column != b.Column{
+		panic("matrix doesn't fit each other, can't perform subtraction")
+	}
+	var data [][]float64
+	for i := 0; i < a.Row; i++ {
+		rowData := make([]float64, 0, a.Row)
+		for j := 0; j < a.Column; j++ {
+			rowData = append(rowData,a.Cell[i][j]-b.Cell[i][j])
+		}
+		data = append(data,rowData)
+	}
+
+	matrix :=Matrix{
+		Row:a.Row,
+		Column:a.Column,
+		Cell:data,
+	}
+	return matrix
+}
+
+/*-----------------------------functions for calculate the attribution of matrix--------------------------------------*/
+
+
+//calculate the Determinant of a matrix
 func Determinant(m Matrix)float64{
 
 	if m.Row != m.Column{
@@ -402,144 +555,26 @@ func Determinant(m Matrix)float64{
 
 }
 
-
-func MatrixTimesRealNumber(m Matrix, rn float64)Matrix{
-	var data [][]float64
+//return the sum of the whole matrix
+func Sum(m Matrix)float64{
+	sum := 0.0
 	for i := 0; i < m.Row; i++ {
-		rowData := make([]float64, 0, m.Row)
 		for j := 0; j < m.Column; j++ {
-			rowData = append(rowData,m.Cell[i][j] * rn)
+			sum += m.Cell[i][j]
 		}
-		data = append(data,rowData)
 	}
-
-	matrix :=Matrix{
-		Row:m.Row,
-		Column:m.Column,
-		Cell:data,
-	}
-	return matrix
+	return sum
 }
 
-func AdjugateMatrix(m Matrix)Matrix{
-	var data [][]float64
-	for i := 0; i < m.Row; i++ {
-		rowData := make([]float64, 0, m.Row)
-		for j := 0; j < m.Column; j++ {
-			rowData = append(rowData, adjugatedCell(m, j, i))
-		}
-		data = append(data,rowData)
-	}
-
-	matrix :=Matrix{
-		Row:m.Row,
-		Column:m.Column,
-		Cell:data,
-	}
-	return matrix
-}
-
-func adjugatedCell(m Matrix, rowIndex int, columnIndex int)float64{
-
-	sign := 0.0
-	if rowIndex + columnIndex == 0 || (rowIndex + columnIndex)%2 == 0{
-		sign = 1
-	}else{
-		sign = -1
-	}
-
-	return sign * Determinant(RemoveRowAndColumn(m, rowIndex, columnIndex))
-}
-
-func MatrixAdd(a Matrix, b Matrix)Matrix{
-	if a.Row != b.Row || a.Column != b.Column{
-		panic("matrix doesn't fit each other, can't perform adding")
-	}
-	var data [][]float64
-	for i := 0; i < a.Row; i++ {
-		rowData := make([]float64, 0, a.Row)
-		for j := 0; j < a.Column; j++ {
-			rowData = append(rowData,a.Cell[i][j]+b.Cell[i][j])
-		}
-		data = append(data,rowData)
-	}
-
-	matrix :=Matrix{
-		Row:a.Row,
-		Column:a.Column,
-		Cell:data,
-	}
-	return matrix
-}
-
-func MatrixSubtraction(a Matrix, b Matrix)Matrix{
-	if a.Row != b.Row || a.Column != b.Column{
-		panic("matrix doesn't fit each other, can't perform subtraction")
-	}
-	var data [][]float64
-	for i := 0; i < a.Row; i++ {
-		rowData := make([]float64, 0, a.Row)
-		for j := 0; j < a.Column; j++ {
-			rowData = append(rowData,a.Cell[i][j]-b.Cell[i][j])
-		}
-		data = append(data,rowData)
-	}
-
-	matrix :=Matrix{
-		Row:a.Row,
-		Column:a.Column,
-		Cell:data,
-	}
-	return matrix
-}
-
-func(this *Matrix)Update(newMatrix Matrix){
-	if this.Row != newMatrix.Row || this.Column != newMatrix.Column{
-		panic("Notice: format will be changed\n")
-		this.Column = newMatrix.Column
-		this.Row = newMatrix.Row
-	}
-
-	var data [][]float64
-	for i := 0; i < newMatrix.Row; i++ {
-		rowData := make([]float64, 0, newMatrix.Row)
-		for j := 0; j < newMatrix.Column; j++ {
-			rowData = append(rowData,newMatrix.Cell[i][j])
-		}
-		data = append(data,rowData)
-	}
-
-	this.Cell = data
-
+//return the average value of the whole matrix
+func Average(m Matrix)float64{
+	return Sum(m)/float64(m.Row * m.Column)
 }
 
 
-/*------------------------------------------------------------squeeze--------------------------------------------------*/
+/*----------------------------------------------------squeeze matrix--------------------------------------------------*/
 
-func SqueezedSumRowMatrix(m Matrix)Matrix{
-
-	var data [][]float64
-	rowData := make([]float64, 0, m.Row)
-	for i := 0; i < m.Column; i ++{
-		cellResult := 0.0
-		for j :=0; j < m.Row; j++{
-			cellResult += m.Cell[j][i]
-		}
-		rowData = append(rowData,cellResult)
-	}
-	data = append(data,rowData)
-
-
-	matrix :=Matrix{
-		Row:1,
-		Column:m.Column,
-		Cell:data,
-	}
-
-	return matrix
-}
-
-
+//return the sum of each column
 func SqueezedSumColumnMatrix(m Matrix)Matrix{
 
 	var data [][]float64
@@ -563,14 +598,14 @@ func SqueezedSumColumnMatrix(m Matrix)Matrix{
 	return matrix
 }
 
+//return the average of each column
+func SqueezedAverageColumnMatrix(m Matrix)Matrix{
 
-func SqueezedAverageRowMatrix(m Matrix)Matrix{
-
-	return MatrixTimesRealNumber(SqueezedSumRowMatrix(m), 1/float64(m.Row))
+	return ScalarMatrix(SqueezedSumColumnMatrix(m), 1/float64(m.Row))
 }
 
-
-func SqueezedMaxRowMatrix(m Matrix)Matrix{
+//return the maximum value of each column
+func SqueezedMaxColumnMatrix(m Matrix)Matrix{
 
 	var data [][]float64
 	rowData := make([]float64, 0, m.Row)
@@ -595,8 +630,8 @@ func SqueezedMaxRowMatrix(m Matrix)Matrix{
 	return matrix
 }
 
-
-func SqueezedMinRowMatrix(m Matrix)Matrix{
+//return the minimum value of each column
+func SqueezedMinColumnMatrix(m Matrix)Matrix{
 
 	var data [][]float64
 	rowData := make([]float64, 0, m.Row)
@@ -621,38 +656,3 @@ func SqueezedMinRowMatrix(m Matrix)Matrix{
 	return matrix
 }
 
-
-
-
-func AbsMatrix(m Matrix)Matrix{
-	var data [][]float64
-	for i := 0; i < m.Row; i++ {
-		rowData := make([]float64, 0, m.Row)
-		for j := 0; j < m.Column; j++ {
-			rowData = append(rowData,math.Abs(m.Cell[i][j]))
-		}
-		data = append(data,rowData)
-	}
-
-	matrix :=Matrix{
-		Row:m.Row,
-		Column:m.Column,
-		Cell:data,
-	}
-	return matrix
-}
-
-
-func Sum(m Matrix)float64{
-	sum := 0.0
-	for i := 0; i < m.Row; i++ {
-		for j := 0; j < m.Column; j++ {
-			sum += m.Cell[i][j]
-		}
-	}
-	return sum
-}
-
-func Average(m Matrix)float64{
-	return Sum(m)/float64(m.Row * m.Column)
-}

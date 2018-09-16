@@ -5,62 +5,8 @@ import (
 )
 
 
-/*-------------------------------------------------example----------------------------------------------------*/
 
-func EXAMPLE(){
-
-	//a real problem : find the relationship between features of house and house price
-
-	X :=NewEmptyMatrix(5,4)
-	//features of houses
-	//-----x0-------------size----------bedrooms-----------age-------
-	X.Cell[0][0]=1;	X.Cell[0][1]=2104; X.Cell[0][2]=5;X.Cell[0][3]=45
-	X.Cell[1][0]=1; X.Cell[1][1]=1416; X.Cell[1][2]=3;X.Cell[1][3]=40
-	X.Cell[2][0]=1; X.Cell[2][1]=1534; X.Cell[2][2]=3;X.Cell[2][3]=30
-	X.Cell[3][0]=1; X.Cell[3][1]= 850; X.Cell[3][2]=2;X.Cell[3][3]=36
-	X.Cell[4][0]=1; X.Cell[4][1]=1300; X.Cell[4][2]=4;X.Cell[4][3]=50
-
-
-
-	X.Hprint("features of houses (X):")
-
-	a := Determinant(MatrixMultiplication(TransposedMatrix(X), X))
-	fmt.Printf("%v\n", a)
-
-
-	y :=NewEmptyMatrix(5,1)
-	//--price of houses
-	y.Cell[0][0]=460
-	y.Cell[1][0]=232
-	y.Cell[2][0]=315
-	y.Cell[3][0]=178
-	y.Cell[4][0]=220
-	y.Hprint("price of each house are")
-
-
-
-	example :=NewEmptyMatrix(1, 4)
-	example.Cell[0][0] = 1; example.Cell[0][1] = 1000; example.Cell[0][2] = 4; example.Cell[0][3] = 0
-	example.Hprint("now I have a house with 1000 square feet, 4 bedrooms and is a brand new house")
-
-
-
-	result := NormalEquation(X, y)
-	result.Hprint("the result is :")
-	priceOfExampleHouse :=MatrixMultiplication(example, result)
-	priceOfExampleHouse.Hprint("predicted price of example house is :")
-
-
-
-	regularizedResult := RegularizedNormalEquation(X, y, 0.001)
-	regularizedResult.Hprint("the regularized result is :")
-	priceOfRegularizedExampleHouse :=MatrixMultiplication(example, regularizedResult)
-	priceOfRegularizedExampleHouse.Hprint("regularized predicted price of example house is :")
-
-}
-
-
-/*-------------------------------------------------linear regression----------------------------------------------------*/
+/*---------------------------------------------cost/loss function----------------------------------------------------*/
 
 func LinearRegressionLossFunction(yHat float64, y float64)float64{
 	return (yHat - y) * (yHat - y)
@@ -86,46 +32,11 @@ func LinearRegressionCostFunction(yHatMatrix *Matrix, yMatrix *Matrix)(float64, 
 }
 
 
-func NormalEquation(X Matrix, y Matrix)Matrix{
-	//note: when the normal equation meets the problem of non-invertible matrix
-	//		regularized normal equation can fix it ;-)
-	//		just put a really small number like o.ooo1 into lambda
 
-	if y.Row != X.Row || y.Column != 1{
-		panic("value format error")
-	}
-	XT := TransposedMatrix(X)
-	return MatrixMultiplication(MatrixMultiplication(InverseMatrix(MatrixMultiplication(XT, X)), XT), y)
+/*---------------------------------------------linear regression----------------------------------------------------*/
 
 
-}
-
-
-//regularized normal equation here is used to prevent over-fitting
-//by adding the parameter lambda, the function can be more smooth
-func RegularizedNormalEquation(X Matrix, y Matrix, lambda float64)Matrix{
-
-	//lambda here is usually a really small number
-
-	if y.Row != X.Row || y.Column != 1{
-		panic("value format error")
-	}
-	XT := TransposedMatrix(X)
-	
-	penaltyMatrix := NewIdentityMatrix(X.Column)
-	penaltyMatrix.Cell[0][0] = 0
-
-	penalty := MatrixTimesRealNumber(penaltyMatrix, lambda)
-
-	
-	return MatrixMultiplication(MatrixMultiplication(InverseMatrix(MatrixAdd(MatrixMultiplication(XT, X),penalty)), XT), y)
-
-}
-
-
-
-
-func LinearRegressionGradientDecent(X Matrix, y Matrix, alpha float64, startParameter Matrix, learningTimes int)Matrix{
+func LinearRegressionGradientDecent(X Matrix, y Matrix, alpha float64, startParameter Matrix,passDerivative float64, learningTimes int)Matrix{
 	//X: data( if we have m examples and n features, X should be a m * (n+1) matrix, with X.data[*][0]=1)
 	//y: result (m examples means we should have m results y should be a m * 1 matrix)
 	//startParameter (an n * 1 matrix with parameters we want to start the gradient decent)
@@ -142,7 +53,7 @@ func LinearRegressionGradientDecent(X Matrix, y Matrix, alpha float64, startPara
 		times ++
 		derivative.Update(derivativeOfLinearRegressionCostFunction(X, y,parameter))
 		if times%500000 == 0{
-			fmt.Printf("progress : %d%%\n", times/learningTimes)
+			fmt.Printf("progress : %f%%\n", float64(times)/float64(learningTimes))
 			derivative.Hprint("current derivative is :")
 			parameter.Hprint("and the parameter is: ")
 
@@ -150,7 +61,7 @@ func LinearRegressionGradientDecent(X Matrix, y Matrix, alpha float64, startPara
 
 		pass := true
 		for i := 0; i < derivative.Row; i++{
-			if derivative.Cell[i][0] > 0.01 || derivative.Cell[i][0] < (-0.01){
+			if derivative.Cell[i][0] > passDerivative || derivative.Cell[i][0] < (-passDerivative){
 				pass = false
 				break
 			}
@@ -163,8 +74,7 @@ func LinearRegressionGradientDecent(X Matrix, y Matrix, alpha float64, startPara
 		if times > learningTimes{
 			break
 		}
-		parameter.Update(MatrixSubtraction(parameter, MatrixTimesRealNumber(derivative,alpha) ))
-		//parameter.Hprint(strconv.Itoa(times)+" times parameter is :")
+		parameter.Update(MatrixSubtraction(parameter, ScalarMatrix(derivative,alpha) ))
 
 	}
 
@@ -175,9 +85,14 @@ func LinearRegressionGradientDecent(X Matrix, y Matrix, alpha float64, startPara
 func derivativeOfLinearRegressionCostFunction(X Matrix, y Matrix,parameter Matrix)Matrix{
 
 	//(Xt * ((X * parameter) - y))/m
-	return MatrixTimesRealNumber(MatrixMultiplication(TransposedMatrix(X), MatrixSubtraction(MatrixMultiplication(X, parameter),y)),1/float64(X.Row))
+	return ScalarMatrix(MatrixMultiplication(TransposeMatrix(X), MatrixSubtraction(MatrixMultiplication(X, parameter),y)),1/float64(X.Row))
 
 }
+
+
+/*-----------------------------------------scaring linear regression--------------------------------------------------*/
+
+//todo : fix bugs in scaring linear regression
 
 //todo add a supporting matrix
 const(
@@ -188,17 +103,17 @@ const(
 
 )
 
-//by using feature scaring, the result can be improved
-func ScariedGradientDecent(X Matrix, y Matrix, alpha float64, supportMatrix Matrix, startParameter Matrix, learningTimes int)Matrix{
+//by using feature scaring, the speed of calculating can be improved
+func ScaringGradientDecent(X Matrix, y Matrix, alpha float64, supportMatrix Matrix, startParameter Matrix, learningTimes int)Matrix{
 
 	if supportMatrix.Column != X.Column{
 		panic("support Matrix format error")
 	}
 	recoveryMatrix := NewEmptyMatrix(1, X.Column)
 	absX := AbsMatrix(X)
-	squeezedAverageX := SqueezedAverageRowMatrix(absX)
-	squeezedMaxX := SqueezedMaxRowMatrix(absX)
-	squeezedMinX := SqueezedMinRowMatrix(absX)
+	squeezedAverageX := SqueezedAverageColumnMatrix(absX)
+	squeezedMaxX := SqueezedMaxColumnMatrix(absX)
+	squeezedMinX := SqueezedMinColumnMatrix(absX)
 
 	for i:=0; i < X.Column; i ++{
 		switch supportMatrix.Cell[0][i] {
@@ -225,7 +140,7 @@ func ScariedGradientDecent(X Matrix, y Matrix, alpha float64, supportMatrix Matr
 
 
 
-	rowResult := LinearRegressionGradientDecent(improvedX, y, alpha,improvedStartParameter, learningTimes)
+	rowResult := LinearRegressionGradientDecent(improvedX, y, alpha,improvedStartParameter, 0.005,learningTimes)
 	rowResult.Hprint("row result is: ")
 	return ResultRecovering(rowResult, recoveryMatrix)
 }
