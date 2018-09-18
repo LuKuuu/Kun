@@ -128,13 +128,14 @@ func ExampleOfScaringLinearRegression(){
 func TestOfLogisticRegression(){
 
 	//create data with n examples
-	n := 100
+	n := 1000
+	m := 6
 
-	X:=LKmath.NewRandomMatrix(true,5,n, 0, 1)
+	X:=LKmath.NewRandomMatrix(true,m,n, 0, 1)
 	y:=LKmath.NewEmptyMatrix(1,n)
 
 	for i :=0; i <n; i++{
-		if 1*X.Cell[0][i] + 6* X.Cell[1][i] + 4*X.Cell[2][i] + 9* X.Cell[3][i] +3*X.Cell[4][i] >11{
+		if 1*X.Cell[0][i] + 60* X.Cell[1][i] + 4*X.Cell[2][i] + 9* X.Cell[3][i] +3*X.Cell[4][i]+20*X.Cell[5][i] >51{
 			y.Cell[0][i]=1
 		}
 	}
@@ -143,11 +144,11 @@ func TestOfLogisticRegression(){
 	//X.Hprint("X is: ")
 	//y.Hprint("y is: ")
 
-	w :=LKmath.NewEmptyMatrix(1, 5)
-	w.Cell[0][0]=1; w.Cell[0][1]=1; w.Cell[0][2]=1; w.Cell[0][3]=1; w.Cell[0][4]=1
-	Parameter :=LKmath.NodeParameter{W:w,B: -1}
+	w :=LKmath.NewEmptyMatrix(1, m)
+	w.Cell[0][0]=0.108186; w.Cell[0][1]=20.228739; w.Cell[0][2]=0.993515; w.Cell[0][3]=2.894106; w.Cell[0][4]=0.353419; w.Cell[0][5]=6.341988
+	Parameter :=LKmath.NodeParameter{W:w,B: -16.276119 }
 
 
-	LKmath.LogisticRegressionGradientDecent(X, y, 0.0001,Parameter, 100000000000 )
+	LKmath.LogisticRegressionGradientDecent(X, y, 0.0001,Parameter, 1000000 )
 
 }

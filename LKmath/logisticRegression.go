@@ -225,7 +225,7 @@ func LogisticRegressionGradientDecent(X Matrix, y Matrix, alpha float64, startPa
 	for{
 		times ++
 		derivative.Update(DerivativeOfLogisticalRegressionCostFunction(X, y,parameter))
-		if times%500000 == 0{
+		if times%5000 == 0{
 			fmt.Printf("progress : %f%%\n", float64(times)/float64(learningTimes))
 			derivative.Hprint("current derivatives are :")
 			parameter.Hprint("and the parameters are: ")
