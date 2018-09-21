@@ -13,14 +13,12 @@ func ReadMatrixFromFile(fileName string)LKmath.Matrix {
 
 	if fileName == "" {
 		panic("no file name")
-		return
 	}
 
 fmt.Printf("start reading file from %s", fileName)
 	file, err := os.Open("./" + fileName)
 	if err != nil {
 		panic(fmt.Sprintf("there is an error %v when trying ro read %s.", err, fileName))
-		return
 	}
 	defer file.Close()
 	reader := csv.NewReader(file)
