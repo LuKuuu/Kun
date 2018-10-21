@@ -1,9 +1,10 @@
 package LKmath
 
 import (
+	"fmt"
+	"math"
 	"math/rand"
 	"time"
-	"fmt"
 )
 
 /*
@@ -15,7 +16,7 @@ the LayerParameter[n} is the parameter between hidden layer n and output layer
 in each layer
 layerParameter are parameters for nodes on the next layer
 LayerParameter[x], node parameter[y] is the parameter for the {y+1)th node of the next layer
- */
+*/
 
 //layer parameter is the parameters between previous layer and the next layer
 
@@ -30,7 +31,6 @@ type LayerParameter struct{
 	NextLayerNum			int
 
 	NodeParameter  			[]NodeParameter
-	NodeDerivative  		[]NodeParameter
 
 }
 
@@ -40,14 +40,11 @@ func NewRandomLayerParameter(initialize bool, PreviousLayerNo int, NextLayerNo i
 		rand.Seed(time.Now().Unix())
 	}
 
-	nd :=[]NodeParameter{}
 	n :=[]NodeParameter{}
 
 	for i:=0; i< NextLayerNum; i++{
 		newNode :=NewRandomNode(initialize, PreviousLayerNum,max, min)
-		newEmptyDerivative :=NewEmptyNode(PreviousLayerNum)
 		n =append(n, newNode)
-		nd = append(nd, newEmptyDerivative)
 
 	}
 
@@ -57,7 +54,6 @@ func NewRandomLayerParameter(initialize bool, PreviousLayerNo int, NextLayerNo i
 		PreviousLayerNum: 		PreviousLayerNum,
 		NextLayerNum:    		NextLayerNum,
 		NodeParameter:   		n,
-		NodeDerivative: 	 	nd,
 
 	}
 
@@ -79,7 +75,7 @@ func (this *LayerParameter)Hprint(info string){
 /*
 layerParameter[0] is the parameter between input layer and first hidden layer
 layerParameter[x] is the parameter between hidden layer x and hidden layer x+1
- */
+*/
 type NeuralNetwork struct{
 	InputLayerNum				int
 	OutputLayerNum				int
@@ -140,9 +136,8 @@ func (this *NeuralNetwork)Hprint(info string){
 /*--------------------------------------------------forward propagation---------------------------------------------------------*/
 
 
-func (this *NeuralNetwork)ForwardPropagation(inputMatrix Matrix)(outputMatrix Matrix){
+func (this *NeuralNetwork)ForwardPropagation(inputMatrix Matrix)(outputMatrix Matrix, temp []Matrix){
 
-	temp :=[]Matrix{}
 	for i :=0; i<=this.HiddenLayerNum; i++{
 		temp =append(temp, NewEmptyMatrix(int(this.Attribution.Cell[0][i+1]), inputMatrix.Column))
 	}
@@ -164,12 +159,158 @@ func (this *NeuralNetwork)ForwardPropagation(inputMatrix Matrix)(outputMatrix Ma
 			}
 		}
 
-		temp[i].Hprint(fmt.Sprintf("temp %d", i))
+		//temp[i].Hprint(fmt.Sprintf("temp %d", i))
 
 
 	}
 
-	return NewCopyMatrix(temp[this.HiddenLayerNum])
+	return NewCopyMatrix(temp[this.HiddenLayerNum]), temp
 }
 
 
+/*--------------------------------backward propagation ------------------------------------------*/
+
+//calculate derivative of one single layer
+
+func UpdateFinalLayerDerivative(temp Matrix, y Matrix, nn NeuralNetwork)(NeuralNetwork,Matrix){
+
+	backTemp :=NewEmptyMatrix(nn.OutputLayerNum,y.Column)
+	for i :=0; i <  nn.OutputLayerNum; i++{
+		cm :=KeepOneRow(y, i)
+		d , backTempRow:=DerivativeOfLogisticalRegressionCostFunction(temp,cm , nn.LayerParameter[nn.HiddenLayerNum].NodeParameter[i])
+		nn.LayerParameter[nn.HiddenLayerNum].NodeParameter[i].DB = d.DB
+		nn.LayerParameter[nn.HiddenLayerNum].NodeParameter[i].DW.Update(d.DW)
+		for j:=0;j<backTemp.Column;j++{
+			backTemp.Cell[i][j]=backTempRow.Cell[0][j]
+		}
+	}
+
+	return nn, backTemp
+}
+
+func UpdateHiddenLayerDerivative(layerNo int, temp Matrix, nn NeuralNetwork)NeuralNetwork{
+
+	parameterTemp :=NewEmptyMatrix(nn.LayerParameter[layerNo+1].NextLayerNum, nn.LayerParameter[layerNo].NextLayerNum)
+
+	for i:=0; i< parameterTemp.Row; i++ {
+		for j :=0; j< parameterTemp.Column; j++{
+			parameterTemp.Cell[i][j] = nn.LayerParameter[layerNo+1].NodeParameter[i].DB * nn.LayerParameter[layerNo+1].NodeParameter[i].W.Cell[0][j]
+		}
+	}
+
+	squeezedParameter :=SqueezedAverageColumnMatrix(parameterTemp)
+
+	for i :=0; i<nn.LayerParameter[layerNo].NextLayerNum; i++ {
+		nn.LayerParameter[layerNo].NodeParameter[i].DB = 10* squeezedParameter.Cell[0][i] * Average(DerivativeOfSigmoidFunctionForMatrix(YHat(temp, nn.LayerParameter[layerNo].NodeParameter[i])))
+		nn.LayerParameter[layerNo].NodeParameter[i].DW.Update(TransposeMatrix(ScalarMatrix(SqueezedAverageRowMatrix(temp), nn.LayerParameter[layerNo].NodeParameter[i].DB*10/float64(temp.Column))))
+
+	}
+
+
+	return nn
+
+
+}
+
+/*-----------------------------------------------------gradient decent--------------------------------------------------*/
+
+
+func NeuralNetworkGradientDecent(NeuralNetworkName string, X Matrix, y Matrix, alpha float64, NeuralNetwork NeuralNetwork, learningTimes int)NeuralNetwork{
+
+	//X: data( if we have m examples and n features, X should be a (number of input layer) * m matrix)
+	//y: result (m examples means we should have m results so y should be a (number of output layer) * m matrix)
+	//NeuralNetwork a neural network
+	//alpha : learning rate (it should be carefully chose) [according to Ng, A, 0.01 is a good choice)
+
+	if X.Row != NeuralNetwork.InputLayerNum || y.Row != NeuralNetwork.OutputLayerNum || X.Column != y.Column{
+		panic("format error")
+	}
+
+	neuralNetworkData :=NewNeuralNetworkData()
+	neuralNetworkData.ConnectToDatabase("mysql", "root:cjkj@tcp(127.0.0.1:3306)/neural_network")
+
+	fmt.Printf("start reading data from databse...\n")
+	NeuralNetwork,_ = neuralNetworkData.ReadFromDatabase(NeuralNetworkName, NeuralNetwork)
+
+	NeuralNetwork.Hprint(NeuralNetworkName +" before gradient decent")
+
+	fmt.Printf("start gradient decent of the neural network\n")
+
+
+	times :=0
+	cost :=math.Inf(1)
+
+	for{
+		times ++
+
+
+		yHat, temp := NeuralNetwork.ForwardPropagation(X)
+
+
+
+		if times%5001 == 0{
+			NeuralNetwork.Hprint(fmt.Sprintf("\nprogress : %f", float64(times*100)/float64(learningTimes))+"%%")
+			yHat.Hprint("yHat")
+			fmt.Printf("cost is %v\n", LogisticRegressionCostFunction(yHat,y))
+
+			if cost >= LogisticRegressionCostFunction(yHat,y){
+				cost =LogisticRegressionCostFunction(yHat,y)
+			}else{
+				fmt.Printf("before, cost is %v, while cost at present is %v, cost is becoming bigger\n",cost,LogisticRegressionCostFunction(yHat,y))
+			}
+
+			neuralNetworkData.Insert(NeuralNetworkName, NeuralNetwork)
+			fmt.Printf("saved to MySQL successfully!\n")
+
+
+		}
+
+		if times > learningTimes{
+			break
+		}
+
+
+		NeuralNetwork,_  = UpdateFinalLayerDerivative(temp[NeuralNetwork.HiddenLayerNum-1], y, NeuralNetwork)
+
+		for j :=NeuralNetwork.HiddenLayerNum-1; j>=0;j--{
+			if j ==0{
+				NeuralNetwork = UpdateHiddenLayerDerivative(0, X, NeuralNetwork)
+			}else{
+				NeuralNetwork = UpdateHiddenLayerDerivative(j, temp[j], NeuralNetwork)
+
+			}
+		}
+
+		for j:=0; j< NeuralNetwork.HiddenLayerNum+1;j++{
+			for k :=0; k<NeuralNetwork.LayerParameter[j].NextLayerNum;k++{
+				NeuralNetwork.LayerParameter[j].NodeParameter[k].W.Update(MatrixSubtraction(NeuralNetwork.LayerParameter[j].NodeParameter[k].W, ScalarMatrix(NeuralNetwork.LayerParameter[j].NodeParameter[k].DW,alpha)))
+				NeuralNetwork.LayerParameter[j].NodeParameter[k].B -= NeuralNetwork.LayerParameter[j].NodeParameter[k].DB * alpha
+			}
+		}
+
+	}
+	return NeuralNetwork
+}
+
+
+func CleanY(y Matrix)Matrix{
+
+	zero :=0
+	one :=0
+	for i:=0; i<y.Row;i++{
+		for j:=0; j<y.Column;j++{
+			if 	y.Cell[i][j]>0.5{
+				y.Cell[i][j]=1
+				one++
+			}else{
+				y.Cell[i][j]=0
+				zero++
+			}
+
+		}
+	}
+
+	fmt.Printf("there are %d zero and %d one\n",zero, one)
+	return y
+
+}

@@ -2,57 +2,45 @@ package main
 
 import (
 	"fmt"
-	"github.com/LuKuuu/Kun/LKmath"
+	"github.com/LuKuuu/Kun/example"
 	"runtime"
 	"time"
 )
 
-//testing
-
+/*
+important : to avoid the problem of not a number and to for better gradient decent, it would be better to set all parameter greater than 0!
+ */
 
 
 func main() {
 
 	fmt.Printf("%v\n", time.Now())
 
+	//neuralNetworkData :=io.NewNeuralNetworkData()
+	//neuralNetworkData.ConnectToDatabase("mysql", "root:cjkj@tcp(127.0.0.1:3306)/heart")
+	//
+
+
+
 
 	//example.TestOfNormalEquation()
 	//example.TestOfLogisticRegression()
 	//example.TestOfLinearEquation()
+	example.TestOfNeuralNetwork()
 	//
-
-	//nrlp:=LKmath.NewRandomLayerParameter(true, 2, 3, 5, 8,1,-1)
-	//nrlp.Hprint("nrlp:")
-
-
-	nna:=LKmath.NewNeuralNetworkAttribution(1)
-
-	nna.Cell[0][0] =4; 	nna.Cell[0][1] =5; 	nna.Cell[0][2] =2
-
-
-	nnn :=LKmath.NewRandomNeuralNetwork(false, nna, 1,-1)
-	nnn.LayerParameter[1].NodeParameter[0].W.Cell[0][0]=10
-	nnn.LayerParameter[1].NodeParameter[0].W.Cell[0][1]=10
-	nnn.LayerParameter[1].NodeParameter[0].W.Cell[0][2]=10
-	nnn.LayerParameter[1].NodeParameter[0].W.Cell[0][3]=10
-	nnn.LayerParameter[1].NodeParameter[0].W.Cell[0][4]=10
-	nnn.LayerParameter[1].NodeParameter[0].B = -20
-
-	nnn.LayerParameter[1].NodeParameter[1].W.Cell[0][0]=-10
-	nnn.LayerParameter[1].NodeParameter[1].W.Cell[0][1]=-10
-	nnn.LayerParameter[1].NodeParameter[1].W.Cell[0][2]=-10
-	nnn.LayerParameter[1].NodeParameter[1].W.Cell[0][3]=-10
-	nnn.LayerParameter[1].NodeParameter[1].W.Cell[0][4]=-10
-	nnn.LayerParameter[1].NodeParameter[1].B = 20
+	//m :=LKmath.NewRandomMatrix(true, 3,3,0,1)
+	//m.Hprint("m")
+	//
+	//sm :=LKmath.ScalarMatrix(m, 3)
+	//sm.Hprint("sm")
+	//
+	//n :=LKmath.SqueezedAverageRowMatrix(m)
+	//n.Hprint("n")
 
 
-	nnn.Hprint("nnn")
 
-	inputMatrix :=LKmath.NewRandomMatrix(true, 4, 1,-10,10)
-	inputMatrix.Hprint("input matrix")
 
-	result :=nnn.ForwardPropagation(inputMatrix)
-	result.Hprint("result of forward propagation")
+
 
 }
 

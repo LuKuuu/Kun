@@ -319,7 +319,34 @@ func RemoveRowAndColumn(m Matrix, rowIndex int, columnIndex int)Matrix{
 }
 
 
+func KeepOneRow(m Matrix, rowIndex int)Matrix {
 
+	if rowIndex >= m.Row {
+		panic("index out of range")
+	}
+
+	row := 1
+	column := m.Column
+
+	var data [][]float64
+	for i := 0; i < m.Row; i++ {
+		if i != rowIndex {
+			continue
+		}
+		rowData := make([]float64, 0, row)
+		for j := 0; j < m.Column; j++ {
+			rowData = append(rowData, m.Cell[i][j])
+		}
+		data = append(data, rowData)
+	}
+
+	matrix := Matrix{
+		Row:    row,
+		Column: column,
+		Cell:   data,
+	}
+	return matrix
+}
 
 /*---------------------------------------functions for printing matrix----------------------------------------------*/
 
@@ -603,6 +630,43 @@ func SqueezedAverageColumnMatrix(m Matrix)Matrix{
 
 	return ScalarMatrix(SqueezedSumColumnMatrix(m), 1/float64(m.Row))
 }
+
+
+//return the sum of each row
+func SqueezedSumRowMatrix(m Matrix)Matrix{
+
+	var data [][]float64
+	for i := 0; i < m.Row; i++{
+		rowData := make([]float64, 0, m.Row)
+		cellResult := 0.0
+		for j :=0; j < m.Column; j++{
+			cellResult += m.Cell[i][j]
+		}
+
+		rowData = append(rowData,cellResult)
+		data = append(data,rowData)
+
+	}
+
+
+	matrix :=Matrix{
+		Row:m.Row,
+		Column:1,
+		Cell:data,
+	}
+
+	return matrix
+}
+
+//return the average of each row
+func SqueezedAverageRowMatrix(m Matrix)Matrix{
+
+	temp :=SqueezedSumRowMatrix(m)
+	return ScalarMatrix(temp, 1/float64(m.Column))
+}
+
+
+
 
 //return the maximum value of each column
 func SqueezedMaxColumnMatrix(m Matrix)Matrix{

@@ -128,7 +128,7 @@ func ExampleOfScaringLinearRegression(){
 func TestOfLogisticRegression(){
 
 	//create data with n examples
-	n := 1000
+	n := 5
 	m := 6
 
 	X:=LKmath.NewRandomMatrix(true,m,n, 0, 1)
@@ -144,11 +144,116 @@ func TestOfLogisticRegression(){
 	//X.Hprint("X is: ")
 	//y.Hprint("y is: ")
 
-	w :=LKmath.NewEmptyMatrix(1, m)
-	w.Cell[0][0]=0.108186; w.Cell[0][1]=20.228739; w.Cell[0][2]=0.993515; w.Cell[0][3]=2.894106; w.Cell[0][4]=0.353419; w.Cell[0][5]=6.341988
-	Parameter :=LKmath.NodeParameter{W:w,B: -16.276119 }
+	Parameter := LKmath.NewEmptyNode(m)
 
 
-	LKmath.LogisticRegressionGradientDecent(X, y, 0.0001,Parameter, 1000000 )
+
+	LKmath.LogisticRegressionGradientDecent(X, y, 0.01,Parameter, 100000000 )
+
+
+
+//progress : 44.940000%
+//	W:
+//	1.565060	108.032650	6.853914	16.520635	3.933365	36.684508
+//B: -91.193275
+//dW:
+//	-0.000001	-0.000079	-0.000005	-0.000012	-0.000003	-0.000027
+//dB: 0.000067
+
+
+}
+
+
+func TestOfNeuralNetwork(){
+	//nrlp:=LKmath.NewRandomLayerParameter(true, 2, 3, 5, 8,1,-1)
+	//nrlp.Hprint("nrlp:")
+
+
+	n :=100
+
+	nna:=LKmath.NewNeuralNetworkAttribution(1)
+
+	nna.Cell[0][0] = 5; nna.Cell[0][1] =2; 	nna.Cell[0][2] =1
+
+	X :=LKmath.NewRandomMatrix(true, 5, n, 0,1)
+	X.Hprint("X")
+	Y :=LKmath.NewEmptyMatrix(1, n)
+
+	enn :=LKmath.NewRandomNeuralNetwork(false, nna, 1,0)
+	//enn.Hprint("enn:")
+
+	enn.LayerParameter[0].NodeParameter[0].W.Cell[0][0]=1
+	enn.LayerParameter[0].NodeParameter[0].W.Cell[0][1]=1
+	enn.LayerParameter[0].NodeParameter[0].W.Cell[0][2]=4
+	enn.LayerParameter[0].NodeParameter[0].W.Cell[0][3]=1
+	enn.LayerParameter[0].NodeParameter[0].W.Cell[0][4]=-4
+	enn.LayerParameter[0].NodeParameter[0].B = -1
+
+	enn.LayerParameter[0].NodeParameter[1].W.Cell[0][0]=2
+	enn.LayerParameter[0].NodeParameter[1].W.Cell[0][1]=8
+	enn.LayerParameter[0].NodeParameter[1].W.Cell[0][2]=-10
+	enn.LayerParameter[0].NodeParameter[1].W.Cell[0][3]=3
+	enn.LayerParameter[0].NodeParameter[1].W.Cell[0][4]=6
+	enn.LayerParameter[0].NodeParameter[1].B = -25
+
+
+	enn.LayerParameter[1].NodeParameter[0].W.Cell[0][0]=100
+	enn.LayerParameter[1].NodeParameter[0].W.Cell[0][1]=-30
+	enn.LayerParameter[1].NodeParameter[0].B=-50
+
+
+	neuralNetworkData :=LKmath.NewNeuralNetworkData()
+	neuralNetworkData.ConnectToDatabase("mysql", "root:cjkj@tcp(127.0.0.1:3306)/neural_network")
+
+	//neuralNetworkData.Insert("enn",enn)
+
+	Y, _ =enn.ForwardPropagation(X)
+
+	Y = LKmath.CleanY(Y)
+
+	Y.Hprint("Y")
+
+	//copyedNN :=LKmath.NewRandomNeuralNetwork(false, nna, 100, -100)
+	//copyedNN ,_= neuralNetworkData.ReadFromDatabase("enn", copyedNN)
+	//copyedNN.Hprint("copyedNN")
+	//
+	//
+	//neuralNetworkData.Insert("copiedNN",copyedNN)
+
+
+	nnn :=LKmath.NewRandomNeuralNetwork(false, nna, 1,0)
+
+	//nnn,_ = neuralNetworkData.ReadFromDatabase("nnn", nnn)
+	//nnn.LayerParameter[0].NodeParameter[0].W.Cell[0][0]=0.66
+	//nnn.LayerParameter[0].NodeParameter[0].W.Cell[0][1]=1.68
+	//nnn.LayerParameter[0].NodeParameter[0].W.Cell[0][2]=6.1
+	//nnn.LayerParameter[0].NodeParameter[0].W.Cell[0][3]=2.1
+	//nnn.LayerParameter[0].NodeParameter[0].W.Cell[0][4]=-1.8
+	//nnn.LayerParameter[0].NodeParameter[0].B = -1.9
+	//
+	//nnn.LayerParameter[0].NodeParameter[1].W.Cell[0][0]=2.98
+	//nnn.LayerParameter[0].NodeParameter[1].W.Cell[0][1]=3.97
+	//nnn.LayerParameter[0].NodeParameter[1].W.Cell[0][2]=14.97
+	//nnn.LayerParameter[0].NodeParameter[1].W.Cell[0][3]=2.98
+	//nnn.LayerParameter[0].NodeParameter[1].W.Cell[0][4]=7.98
+	//nnn.LayerParameter[0].NodeParameter[1].B = -10.12
+	//
+	//
+	//nnn.LayerParameter[1].NodeParameter[0].W.Cell[0][0]=33
+	//nnn.LayerParameter[1].NodeParameter[0].W.Cell[0][1]=-37
+	//nnn.LayerParameter[1].NodeParameter[0].B=-4.9
+
+
+
+	yHat, _ :=enn.ForwardPropagation(X)
+	yHat.Hprint("yHat")
+
+
+	nnn.Hprint("nnn before gradient decent")
+
+	nnn =LKmath.NeuralNetworkGradientDecent("nnn", X,Y, 0.001, nnn,10000000000)
+
+	nnn.Hprint("nnn after first gradient decent")
+
 
 }

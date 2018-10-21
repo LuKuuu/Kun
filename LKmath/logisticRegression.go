@@ -1,8 +1,8 @@
 package LKmath
 
 import (
-	"math"
 	"fmt"
+	"math"
 	"math/rand"
 	"time"
 )
@@ -29,42 +29,58 @@ here are the relationship between them
 type NodeParameter struct {
 	W Matrix
 	B float64
+	DW Matrix
+	DB float64
 }
 
 func NewEmptyNode(featureNum int)NodeParameter{
-	return NodeParameter{NewValuedMatrix(1,featureNum, 0), 0}
+	return NodeParameter{NewValuedMatrix(1,featureNum, 0), 0,NewValuedMatrix(1,featureNum, 0), 0}
 }
 
 func NewValuedNode(featureNum int, value float64)NodeParameter{
-	return NodeParameter{NewValuedMatrix(1,featureNum, value), value}
+	return NodeParameter{NewValuedMatrix(1,featureNum, value), value,NewValuedMatrix(1,featureNum, 0), 0}
 }
 
-func NewRandomNode(intialize bool, featureNum int, max float64, min float64)NodeParameter {
-	if intialize{
+func NewRandomNode(initialize bool, featureNum int, max float64, min float64)NodeParameter {
+	if initialize {
 		rand.Seed(time.Now().Unix())
 	}
-	return NodeParameter{NewRandomMatrix(intialize, 1, featureNum, max, min), ((max - min) *rand.Float64()) + min}
+	return NodeParameter{NewRandomMatrix(initialize, 1, featureNum, max, min), ((max - min) *rand.Float64()) + min,NewValuedMatrix(1,featureNum, 0), 0}
 }
 
 func (this *NodeParameter)Update(np NodeParameter){
+
 	this.W.Update(np.W)
 	this.B=np.B
+	this.DW.Update(np.DW)
+	this.DB=np.DB
 }
 
 func (this *NodeParameter)Hprint(info string){
 	fmt.Printf(info+"\n")
+
 	fmt.Printf("W:\n")
 	for i := 0; i < this.W.Row; i++ {
 		s := ""
 		for j := 0; j < this.W.Column; j++ {
-			s = s + fmt.Sprintf("%f ",this.W.Cell[i][j])
+			s = s + fmt.Sprintf("%f\t",this.W.Cell[i][j])
 		}
 		fmt.Printf("%s\n", s)
 
 	}
 
-	fmt.Printf("B: %f \n", this.B)
+	fmt.Printf("B: %f\n", this.B)
 
+	fmt.Printf("dW:\n")
+	for i := 0; i < this.DW.Row; i++ {
+		s := ""
+		for j := 0; j < this.DW.Column; j++ {
+			s = s + fmt.Sprintf("%f\t",this.DW.Cell[i][j])
+		}
+		fmt.Printf("%s\n", s)
+
+	}
+	fmt.Printf("dB: %f\n", this.DB)
 	fmt.Println()
 }
 
@@ -149,6 +165,7 @@ func DerivativeOfLogisticRegressionLossFunctionForMatrix(yHatMatrix Matrix, yMat
 	return result
 }
 
+const maxValue = 0
 func FinalDerivativeOfLogisticRegressionForMatrix(yHatMatrix Matrix, yMatrix Matrix)Matrix {
 
 	if yHatMatrix.Column != yMatrix.Column{
@@ -157,9 +174,14 @@ func FinalDerivativeOfLogisticRegressionForMatrix(yHatMatrix Matrix, yMatrix Mat
 	da := DerivativeOfLogisticRegressionLossFunctionForMatrix(yHatMatrix, yMatrix)
 	dl := DerivativeOfSigmoidFunctionForMatrix(yHatMatrix)
 
+
 	result :=NewEmptyMatrix(1, da.Column)
 	for i:=0; i< da.Column; i++{
 		result.Cell[0][i] = da.Cell[0][i] * dl.Cell[0][i]
+		//to prevent the problem of not a number
+		if math.IsNaN(result.Cell[0][i]){
+			result.Cell[0][i] = math.MaxFloat64
+		}
 	}
 
 	return result
@@ -167,7 +189,7 @@ func FinalDerivativeOfLogisticRegressionForMatrix(yHatMatrix Matrix, yMatrix Mat
 
 }
 
-func LogisticRegressionCostFunction(yHatMatrix *Matrix, yMatrix *Matrix)float64{
+func LogisticRegressionCostFunction(yHatMatrix Matrix, yMatrix Matrix)float64{
 	if yHatMatrix.Row !=1 || yMatrix.Row != 1 || yHatMatrix.Column != yMatrix.Column{
 		panic("LogisticRegressionCostFunction : format error")
 	}
@@ -183,18 +205,23 @@ func LogisticRegressionCostFunction(yHatMatrix *Matrix, yMatrix *Matrix)float64{
 
 
 
-func DerivativeOfLogisticalRegressionCostFunction(X Matrix, yMatrix Matrix, parameter NodeParameter)NodeParameter{
+func DerivativeOfLogisticalRegressionCostFunction(X Matrix, yMatrix Matrix, parameter NodeParameter)(NodeParameter, Matrix){
 
 
 	yHatMatrix :=YHat(X, parameter)
 
 	finalDerivative :=FinalDerivativeOfLogisticRegressionForMatrix(yHatMatrix, yMatrix)
 
-	W := ScalarMatrix(MatrixMultiplication(finalDerivative, TransposeMatrix(X)), 1/float64(X.Column))
+	dW := ScalarMatrix(MatrixMultiplication(finalDerivative, TransposeMatrix(X)), 1/float64(X.Column))
 
-	B :=Average(finalDerivative)
+	dB :=Average(finalDerivative)
 
-	return NodeParameter{W, B}
+	return NodeParameter{parameter.W, parameter.B, dW, dB}, finalDerivative
+
+
+
+
+
 
 }
 
@@ -212,23 +239,22 @@ func LogisticRegressionGradientDecent(X Matrix, y Matrix, alpha float64, startPa
 		panic("format error")
 	}
 
-	fmt.Printf("starting logistic regression\n")
+	fmt.Printf("start logistic regression\n")
 
 
 	parameterW := NewCopyMatrix(startParameter.W)
 	ParameterB := startParameter.B
-	parameter := NodeParameter{parameterW, ParameterB}
-	derivative := NodeParameter{NewEmptyMatrix(parameterW.Row, parameterW.Column), 0}
+	parameter := NodeParameter{parameterW, ParameterB, NewEmptyMatrix(parameterW.Row, parameterW.Column), 0}
 
 	times := 0
 
 	for{
 		times ++
-		derivative.Update(DerivativeOfLogisticalRegressionCostFunction(X, y,parameter))
+		d, _:=DerivativeOfLogisticalRegressionCostFunction(X, y,parameter)
+		parameter.Update(d)
 		if times%5000 == 0{
-			fmt.Printf("progress : %f%%\n", float64(times)/float64(learningTimes))
-			derivative.Hprint("current derivatives are :")
-			parameter.Hprint("and the parameters are: ")
+
+			parameter.Hprint(fmt.Sprintf("\nprogress : %f", float64(times*100)/float64(learningTimes))+"%%")
 
 		}
 
@@ -251,8 +277,9 @@ func LogisticRegressionGradientDecent(X Matrix, y Matrix, alpha float64, startPa
 		if times > learningTimes{
 			break
 		}
-		parameter.Update(NodeParameter{W :MatrixSubtraction(parameter.W, ScalarMatrix(derivative.W,alpha)), B:parameter.B - alpha * derivative.B})
-		//parameter.Hprint(strconv.Itoa(times)+" times parameter is :")
+
+		parameter.W = MatrixSubtraction(parameter.W, ScalarMatrix(parameter.DW,alpha))
+		parameter.B -= alpha * parameter.DB
 
 	}
 
