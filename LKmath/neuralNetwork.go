@@ -188,26 +188,41 @@ func UpdateFinalLayerDerivative(temp Matrix, y Matrix, nn NeuralNetwork)(NeuralN
 	return nn, backTemp
 }
 
-func UpdateHiddenLayerDerivative(layerNo int, temp Matrix, nn NeuralNetwork)NeuralNetwork{
+func UpdateHiddenLayerDerivative(layerNo int, temp Matrix, backTemp Matrix, nn NeuralNetwork)(NeuralNetwork, Matrix){
 
 	parameterTemp :=NewEmptyMatrix(nn.LayerParameter[layerNo+1].NextLayerNum, nn.LayerParameter[layerNo].NextLayerNum)
 
 	for i:=0; i< parameterTemp.Row; i++ {
 		for j :=0; j< parameterTemp.Column; j++{
-			parameterTemp.Cell[i][j] = nn.LayerParameter[layerNo+1].NodeParameter[i].DB * nn.LayerParameter[layerNo+1].NodeParameter[i].W.Cell[0][j]
+			parameterTemp.Cell[i][j] = nn.LayerParameter[layerNo+1].NodeParameter[i].W.Cell[0][j]
 		}
 	}
 
-	squeezedParameter :=SqueezedAverageColumnMatrix(parameterTemp)
+	parameterTemp = ScalarMatrix(MatrixMultiplication(TransposeMatrix(parameterTemp), backTemp),1/float64(nn.LayerParameter[layerNo+1].NextLayerNum))
+	NewBackTemp :=NewEmptyMatrix(nn.LayerParameter[layerNo].NextLayerNum,backTemp.Column )
 
 	for i :=0; i<nn.LayerParameter[layerNo].NextLayerNum; i++ {
-		nn.LayerParameter[layerNo].NodeParameter[i].DB = 10* squeezedParameter.Cell[0][i] * Average(DerivativeOfSigmoidFunctionForMatrix(YHat(temp, nn.LayerParameter[layerNo].NodeParameter[i])))
-		nn.LayerParameter[layerNo].NodeParameter[i].DW.Update(TransposeMatrix(ScalarMatrix(SqueezedAverageRowMatrix(temp), nn.LayerParameter[layerNo].NodeParameter[i].DB*10/float64(temp.Column))))
+
+		yHatMatrix :=YHat(temp, nn.LayerParameter[layerNo].NodeParameter[i])
+		dl := DerivativeOfSigmoidFunctionForMatrix(yHatMatrix)
+
+		finalDerivative :=NewEmptyMatrix(1, dl.Column)
+		for j :=0; j < dl.Column; j++{
+			finalDerivative.Cell[0][j] = parameterTemp.Cell[i][j] * dl.Cell[0][j]
+			NewBackTemp.Cell[i][j] = parameterTemp.Cell[i][j] * dl.Cell[0][j]
+			//to prevent the problem of not a number
+			if math.IsNaN(finalDerivative.Cell[0][j]){
+				finalDerivative.Cell[0][j] = math.MaxFloat64
+			}
+		}
+
+		nn.LayerParameter[layerNo].NodeParameter[i].DB =Average(finalDerivative)
+		nn.LayerParameter[layerNo].NodeParameter[i].DW.Update(ScalarMatrix(MatrixMultiplication(finalDerivative, TransposeMatrix(temp)), 1/float64(temp.Column)))
 
 	}
 
 
-	return nn
+	return nn, backTemp
 
 
 }
@@ -239,6 +254,7 @@ func NeuralNetworkGradientDecent(NeuralNetworkName string, X Matrix, y Matrix, a
 
 	times :=0
 	cost :=math.Inf(1)
+	backTemp :=Matrix{}
 
 	for{
 		times ++
@@ -270,13 +286,13 @@ func NeuralNetworkGradientDecent(NeuralNetworkName string, X Matrix, y Matrix, a
 		}
 
 
-		NeuralNetwork,_  = UpdateFinalLayerDerivative(temp[NeuralNetwork.HiddenLayerNum-1], y, NeuralNetwork)
+		NeuralNetwork,backTemp  = UpdateFinalLayerDerivative(temp[NeuralNetwork.HiddenLayerNum-1], y, NeuralNetwork)
 
 		for j :=NeuralNetwork.HiddenLayerNum-1; j>=0;j--{
 			if j ==0{
-				NeuralNetwork = UpdateHiddenLayerDerivative(0, X, NeuralNetwork)
+				NeuralNetwork, backTemp = UpdateHiddenLayerDerivative(0, X, backTemp, NeuralNetwork)
 			}else{
-				NeuralNetwork = UpdateHiddenLayerDerivative(j, temp[j], NeuralNetwork)
+				NeuralNetwork, backTemp = UpdateHiddenLayerDerivative(j, temp[j], backTemp, NeuralNetwork)
 
 			}
 		}

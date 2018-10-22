@@ -45,7 +45,9 @@ func NewRandomNode(initialize bool, featureNum int, max float64, min float64)Nod
 	if initialize {
 		rand.Seed(time.Now().Unix())
 	}
-	return NodeParameter{NewRandomMatrix(initialize, 1, featureNum, max, min), ((max - min) *rand.Float64()) + min,NewValuedMatrix(1,featureNum, 0), 0}
+	np :=NodeParameter{NewRandomMatrix(initialize, 1, featureNum, max, min), 0,NewValuedMatrix(1,featureNum, 0), 0}
+	np.B=-Sum(np.W)*0.5
+	return np
 }
 
 func (this *NodeParameter)Update(np NodeParameter){

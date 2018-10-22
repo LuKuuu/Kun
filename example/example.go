@@ -199,7 +199,7 @@ func TestOfNeuralNetwork(){
 
 	enn.LayerParameter[1].NodeParameter[0].W.Cell[0][0]=100
 	enn.LayerParameter[1].NodeParameter[0].W.Cell[0][1]=-30
-	enn.LayerParameter[1].NodeParameter[0].B=-50
+	enn.LayerParameter[1].NodeParameter[0].B=-60
 
 
 	neuralNetworkData :=LKmath.NewNeuralNetworkData()
@@ -221,7 +221,7 @@ func TestOfNeuralNetwork(){
 	//neuralNetworkData.Insert("copiedNN",copyedNN)
 
 
-	nnn :=LKmath.NewRandomNeuralNetwork(false, nna, 1,0)
+	//nnn :=LKmath.NewRandomNeuralNetwork(false, nna, 1,0)
 
 	//nnn,_ = neuralNetworkData.ReadFromDatabase("nnn", nnn)
 	//nnn.LayerParameter[0].NodeParameter[0].W.Cell[0][0]=0.66
@@ -245,15 +245,33 @@ func TestOfNeuralNetwork(){
 
 
 
-	yHat, _ :=enn.ForwardPropagation(X)
-	yHat.Hprint("yHat")
+
+	//nnn.Hprint("nnn before gradient decent")
+	//
+	//nnn =LKmath.NeuralNetworkGradientDecent("nnn", X,Y, 0.001, nnn,10000000000)
+	//
+	//nnn.Hprint("nnn after first gradient decent")
 
 
-	nnn.Hprint("nnn before gradient decent")
+	//nna.Cell[0][1] =6
+	//ntnn :=LKmath.NewRandomNeuralNetwork(false, nna, 1,0)
+	//ntnn.Hprint("ntnn before gradient decent")
 
-	nnn =LKmath.NeuralNetworkGradientDecent("nnn", X,Y, 0.001, nnn,10000000000)
 
-	nnn.Hprint("nnn after first gradient decent")
+	//yHat, _ :=ntnn.ForwardPropagation(X)
+	//yHat.Hprint("yHat with ntnn")
+	//yHat = LKmath.CleanY(yHat)
+	//yHat.Hprint("cleaned yHat with ntnn")
+
+
+	//neuralNetworkData.Insert("ntnn", ntnn)
+
+	NoBugNN :=LKmath.NewRandomNeuralNetwork(false, nna, 1, 0)
+	neuralNetworkData.Insert("NoBugNN",NoBugNN)
+
+	NoBugNN =LKmath.NeuralNetworkGradientDecent("NoBugNN", X,Y, 0.001, NoBugNN,10000000000)
+
+
 
 
 }
