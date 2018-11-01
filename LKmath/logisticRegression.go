@@ -192,16 +192,22 @@ func FinalDerivativeOfLogisticRegressionForMatrix(yHatMatrix Matrix, yMatrix Mat
 }
 
 func LogisticRegressionCostFunction(yHatMatrix Matrix, yMatrix Matrix)float64{
-	if yHatMatrix.Row !=1 || yMatrix.Row != 1 || yHatMatrix.Column != yMatrix.Column{
+	if ( yHatMatrix.Column != yMatrix.Column)||(yHatMatrix.Row != yMatrix.Row){
 		panic("LogisticRegressionCostFunction : format error")
 	}
 
 	size := yMatrix.Column
+	features :=yHatMatrix.Row
 	result := 0.0
-	for i := 0; i < size; i++{
-		result +=LogisticRegressionLossFunction(yHatMatrix.Cell[0][i],yMatrix.Cell[0][i])
+
+	for j:=0; j< features;j++{
+		for i := 0; i < size; i++{
+			result +=LogisticRegressionLossFunction(yHatMatrix.Cell[j][i],yMatrix.Cell[j][i])
+		}
 	}
-	return result/float64(size)
+
+
+	return result/float64(size*features)
 
 }
 

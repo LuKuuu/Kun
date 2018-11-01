@@ -267,7 +267,7 @@ func TestOfNeuralNetwork(){
 	//neuralNetworkData.Insert("ntnn", ntnn)
 
 	NoBugNN :=LKmath.NewRandomNeuralNetwork(false, nna, 1, 0)
-	neuralNetworkData.Insert("NoBugNN",NoBugNN)
+	//neuralNetworkData.Insert("NoBugNN",NoBugNN)
 
 	NoBugNN =LKmath.NeuralNetworkGradientDecent("NoBugNN", X,Y, 0.001, NoBugNN,10000000000)
 
