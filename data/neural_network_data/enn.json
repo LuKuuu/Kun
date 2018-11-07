@@ -1,0 +1,142 @@
+{
+	"InputLayerNum": 5,
+	"OutputLayerNum": 2,
+	"Attribution": {
+		"Row": 1,
+		"Column": 3,
+		"Cell": [
+			[
+				5,
+				2,
+				2
+			]
+		]
+	},
+	"HiddenLayerNum": 1,
+	"LayerParameter": [
+		{
+			"PreviousLayerNo": 0,
+			"NextLayerNo": 1,
+			"PreviousLayerNum": 5,
+			"NextLayerNum": 2,
+			"NodeParameter": [
+				{
+					"W": {
+						"Row": 1,
+						"Column": 5,
+						"Cell": [
+							[
+								1,
+								1,
+								4,
+								1,
+								-4
+							]
+						]
+					},
+					"B": -1,
+					"DW": {
+						"Row": 1,
+						"Column": 5,
+						"Cell": [
+							[
+								0,
+								0,
+								0,
+								0,
+								0
+							]
+						]
+					},
+					"DB": 0
+				},
+				{
+					"W": {
+						"Row": 1,
+						"Column": 5,
+						"Cell": [
+							[
+								2,
+								8,
+								-10,
+								3,
+								6
+							]
+						]
+					},
+					"B": -25,
+					"DW": {
+						"Row": 1,
+						"Column": 5,
+						"Cell": [
+							[
+								0,
+								0,
+								0,
+								0,
+								0
+							]
+						]
+					},
+					"DB": 0
+				}
+			]
+		},
+		{
+			"PreviousLayerNo": 1,
+			"NextLayerNo": 2,
+			"PreviousLayerNum": 2,
+			"NextLayerNum": 2,
+			"NodeParameter": [
+				{
+					"W": {
+						"Row": 1,
+						"Column": 2,
+						"Cell": [
+							[
+								100,
+								-30
+							]
+						]
+					},
+					"B": -60,
+					"DW": {
+						"Row": 1,
+						"Column": 2,
+						"Cell": [
+							[
+								0,
+								0
+							]
+						]
+					},
+					"DB": 0
+				},
+				{
+					"W": {
+						"Row": 1,
+						"Column": 2,
+						"Cell": [
+							[
+								-100,
+								30
+							]
+						]
+					},
+					"B": 60,
+					"DW": {
+						"Row": 1,
+						"Column": 2,
+						"Cell": [
+							[
+								0,
+								0
+							]
+						]
+					},
+					"DB": 0
+				}
+			]
+		}
+	]
+}

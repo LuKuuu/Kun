@@ -241,13 +241,17 @@ func NeuralNetworkGradientDecent(NeuralNetworkName string, X Matrix, y Matrix, a
 		panic("format error")
 	}
 
-	neuralNetworkData :=NewNeuralNetworkData()
-	neuralNetworkData.ConnectToDatabase("mysql", "root:cjkj@tcp(127.0.0.1:3306)/neural_network")
+	//neuralNetworkData :=NewNeuralNetworkData()
+	//neuralNetworkData.ConnectToDatabase("mysql", "root:cjkj@tcp(127.0.0.1:3306)/neural_network")
+	//
+	//fmt.Printf("start reading data from databse...\n")
+	//NeuralNetwork,_ = neuralNetworkData.ReadFromDatabase(NeuralNetworkName, NeuralNetwork)
 
-	fmt.Printf("start reading data from databse...\n")
-	NeuralNetwork,_ = neuralNetworkData.ReadFromDatabase(NeuralNetworkName, NeuralNetwork)
+	fmt.Printf("start reading data from JSON file...\n")
+	ReadFromJson(NeuralNetworkName+".json")
 
-	NeuralNetwork.Hprint(NeuralNetworkName +" before gradient decent")
+
+	//NeuralNetwork.Hprint(NeuralNetworkName +" before gradient decent")
 
 	fmt.Printf("start gradient decent of the neural network\n")
 
@@ -264,9 +268,10 @@ func NeuralNetworkGradientDecent(NeuralNetworkName string, X Matrix, y Matrix, a
 
 
 
-		if times%5001 == 0{
-			NeuralNetwork.Hprint(fmt.Sprintf("\nprogress : %f", float64(times*100)/float64(learningTimes))+"%%")
-			yHat.Hprint("yHat")
+		if times%1 == 0{
+			fmt.Printf(fmt.Sprintf("\nprogress : %f", float64(times*100)/float64(learningTimes))+"%%\n")
+			//NeuralNetwork.Hprint(fmt.Sprintf("\nprogress : %f", float64(times*100)/float64(learningTimes))+"%%")
+			//yHat.Hprint("yHat")
 			fmt.Printf("cost is %v\n", LogisticRegressionCostFunction(yHat,y))
 
 			if cost >= LogisticRegressionCostFunction(yHat,y){
@@ -274,9 +279,12 @@ func NeuralNetworkGradientDecent(NeuralNetworkName string, X Matrix, y Matrix, a
 			}else{
 				fmt.Printf("before, cost is %v, while cost at present is %v, cost is becoming bigger\n",cost,LogisticRegressionCostFunction(yHat,y))
 			}
+			//
+			//neuralNetworkData.Insert(NeuralNetworkName, NeuralNetwork)
+			//fmt.Printf("saved to MySQL successfully!\n")
 
-			neuralNetworkData.Insert(NeuralNetworkName, NeuralNetwork)
-			fmt.Printf("saved to MySQL successfully!\n")
+			SaveToJson(NeuralNetworkName+".json", &NeuralNetwork)
+
 
 
 		}

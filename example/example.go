@@ -173,11 +173,11 @@ func TestOfNeuralNetwork(){
 
 	nna:=LKmath.NewNeuralNetworkAttribution(1)
 
-	nna.Cell[0][0] = 5; nna.Cell[0][1] =2; 	nna.Cell[0][2] =1
+	nna.Cell[0][0] = 5; nna.Cell[0][1] =2; 	nna.Cell[0][2] =2
 
 	X :=LKmath.NewRandomMatrix(true, 5, n, 0,1)
 	X.Hprint("X")
-	Y :=LKmath.NewEmptyMatrix(1, n)
+	Y :=LKmath.NewEmptyMatrix(2, n)
 
 	enn :=LKmath.NewRandomNeuralNetwork(false, nna, 1,0)
 	//enn.Hprint("enn:")
@@ -201,9 +201,16 @@ func TestOfNeuralNetwork(){
 	enn.LayerParameter[1].NodeParameter[0].W.Cell[0][1]=-30
 	enn.LayerParameter[1].NodeParameter[0].B=-60
 
+	enn.LayerParameter[1].NodeParameter[1].W.Cell[0][0]=-100
+	enn.LayerParameter[1].NodeParameter[1].W.Cell[0][1]=30
+	enn.LayerParameter[1].NodeParameter[1].B=60
 
 	neuralNetworkData :=LKmath.NewNeuralNetworkData()
 	neuralNetworkData.ConnectToDatabase("mysql", "root:cjkj@tcp(127.0.0.1:3306)/neural_network")
+
+	//LKmath.SaveToJson("enn.json",&enn)
+
+	enn = LKmath.ReadFromJson("enn.json")
 
 	//neuralNetworkData.Insert("enn",enn)
 
@@ -267,9 +274,9 @@ func TestOfNeuralNetwork(){
 	//neuralNetworkData.Insert("ntnn", ntnn)
 
 	NoBugNN :=LKmath.NewRandomNeuralNetwork(false, nna, 1, 0)
-	//neuralNetworkData.Insert("NoBugNN",NoBugNN)
+	//neuralNetworkData.Insert("dNoBugNN",NoBugNN)
 
-	NoBugNN =LKmath.NeuralNetworkGradientDecent("NoBugNN", X,Y, 0.001, NoBugNN,10000000000)
+	NoBugNN =LKmath.NeuralNetworkGradientDecent("dNoBugNN", X,Y, 0.001, NoBugNN,10000000000)
 
 
 

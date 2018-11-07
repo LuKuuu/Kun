@@ -1,9 +1,13 @@
 package LKmath
 
 import (
+	"bufio"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"io/ioutil"
+	"os"
 )
 
 
@@ -41,6 +45,8 @@ func (this *NeuralNetworkData)Close()error{ //关闭连接
 		fmt.Printf("error occored when trying to close databse %s\n",this.err)
 		return this.err
 	}
+
+
 	return nil
 }
 
@@ -89,6 +95,8 @@ func (this *NeuralNetworkData)Insert(NeuralNetworkName string, NeuralNetwork Neu
 
 		}
 	}
+
+	fmt.Printf("finishing inserting\n")
 	return nil
 
 
@@ -154,4 +162,46 @@ func (this *NeuralNetworkData)Update(NeuralNetworkName string, neuralNetwork Neu
 	return nil
 
 
+}
+
+func SaveToJson(fileName string,nn *NeuralNetwork){
+
+	JSON, MarshalErr := json.MarshalIndent(&nn, "", "\t")
+	if MarshalErr !=nil{
+		panic(MarshalErr)
+	}
+
+	fileAddress := "./data/neural_network_data/" + fileName
+	outputFile, outputError := os.OpenFile(fileAddress, os.O_CREATE, 0666) //创建配置文件
+	if outputError != nil {
+		panic(outputError)
+	}
+	defer outputFile.Close()
+	outputWriter := bufio.NewWriter(outputFile)
+	outputWriter.WriteString(string(JSON))
+	outputWriter.Flush()
+
+	fmt.Printf("successfully save neuralnetwork to %s\n",fileAddress)
+}
+
+func ReadFromJson(fileName string)NeuralNetwork{
+	nn := NeuralNetwork{}
+
+	fileAddress := "./data/neural_network_data/" + fileName
+	data, err := ioutil.ReadFile(fileAddress)
+	if err != nil {
+		panic(err)
+
+	} else {
+		fmt.Printf("Loading data from %s\n", fileName)
+	}
+
+	unmarshalErr := json.Unmarshal(data, &nn)
+	if unmarshalErr != nil {
+		panic(unmarshalErr)
+	}
+
+	fmt.Printf("successfully read neural network from %s\n",fileAddress)
+
+	return nn
 }

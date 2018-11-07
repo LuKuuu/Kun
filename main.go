@@ -26,7 +26,7 @@ func main() {
 	//example.TestOfNormalEquation()
 	//example.TestOfLogisticRegression()
 	//example.TestOfLinearEquation()
-	example.TestOfNeuralNetwork()
+	//example.TestOfNeuralNetwork()
 	//
 	//m :=LKmath.NewRandomMatrix(true, 3,3,0,1)
 	//m.Hprint("m")
@@ -37,6 +37,7 @@ func main() {
 	//n :=LKmath.SqueezedAverageRowMatrix(m)
 	//n.Hprint("n")
 
+	example.Handwriting_test()
 
 
 
