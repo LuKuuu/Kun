@@ -166,6 +166,20 @@ func (this *NeuralNetworkData)Update(NeuralNetworkName string, neuralNetwork Neu
 
 func SaveToJson(fileName string,nn *NeuralNetwork){
 
+	saveToJson(fileName+"(temp)",nn)
+	err:=os.Remove("data/neural_network_data/"+fileName)
+	if err!=nil{
+		fmt.Printf("error:%v",err)
+	}
+	err=os.Rename("data/neural_network_data/"+fileName+"(temp)","data/neural_network_data/"+fileName)
+	if err!=nil{
+		panic(err)
+	}
+
+}
+
+func saveToJson(fileName string,nn *NeuralNetwork){
+
 	JSON, MarshalErr := json.MarshalIndent(&nn, "", "\t")
 	if MarshalErr !=nil{
 		panic(MarshalErr)
@@ -183,6 +197,7 @@ func SaveToJson(fileName string,nn *NeuralNetwork){
 
 	fmt.Printf("successfully save neuralnetwork to %s\n",fileAddress)
 }
+
 
 func ReadFromJson(fileName string)NeuralNetwork{
 	nn := NeuralNetwork{}

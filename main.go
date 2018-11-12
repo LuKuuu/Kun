@@ -2,14 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/LuKuuu/Kun/example"
 	"runtime"
 	"time"
 )
 
-/*
-important : to avoid the problem of not a number and to for better gradient decent, it would be better to set all parameter greater than 0!
- */
 
 
 func main() {
@@ -37,7 +33,10 @@ func main() {
 	//n :=LKmath.SqueezedAverageRowMatrix(m)
 	//n.Hprint("n")
 
-	example.Handwriting_test()
+	//example.Handwriting_test()
+	//example.Test()
+
+
 
 
 
