@@ -3,11 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="eb6f0a6f-6684-495d-81c0-d5056ddc280b" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Kun.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Kun.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LKmath/neuralNetwork.go" beforeDir="false" afterPath="$PROJECT_DIR$/LKmath/neuralNetwork.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LKmath/neuralNetworkIO.go" beforeDir="false" afterPath="$PROJECT_DIR$/LKmath/neuralNetworkIO.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/neural_network_data/hw.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/neural_network_data/hwT(2).json" beforeDir="false" afterPath="$PROJECT_DIR$/data/neural_network_data/hwT(2).json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/example/Handwriting_recognization.go" beforeDir="false" afterPath="$PROJECT_DIR$/example/Handwriting_recognization.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/example.go" beforeDir="false" afterPath="$PROJECT_DIR$/example/example.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,37 +20,39 @@
     <session id="1817334842">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="16" />
-          <entry key="project.open.time.5" value="8" />
-          <entry key="project.open.time.6" value="6" />
-          <entry key="project.open.time.7" value="3" />
+          <entry key="project.closed" value="23" />
+          <entry key="project.open.time.0" value="4" />
+          <entry key="project.open.time.4" value="1" />
+          <entry key="project.open.time.5" value="9" />
+          <entry key="project.open.time.6" value="7" />
+          <entry key="project.open.time.7" value="5" />
           <entry key="project.open.time.8" value="1" />
-          <entry key="project.opened" value="18" />
+          <entry key="project.opened" value="27" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="enn" value="1" />
-          <entry key="go" value="45" />
-          <entry key="json" value="10" />
+          <entry key="go" value="52" />
+          <entry key="json" value="11" />
           <entry key="json(temp)" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Go" value="45" />
-          <entry key="JSON" value="10" />
+          <entry key="Go" value="52" />
+          <entry key="JSON" value="11" />
           <entry key="PLAIN_TEXT" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="go" value="14493" />
+          <entry key="go" value="14593" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Go" value="14493" />
+          <entry key="Go" value="14593" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.go.postfix.template.usages.trigger">
@@ -63,32 +65,25 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/main.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="682">
+              <caret line="36" column="20" selection-start-line="36" selection-start-column="20" selection-end-line="36" selection-end-column="20" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data/neural_network_data/hwT800.json">
+          <provider selected="true" editor-type-id="LargeFileEditor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/example/Handwriting_recognization.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1457">
-              <caret line="167" lean-forward="true" selection-start-line="167" selection-end-line="167" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../petar/GoMNIST/mnist.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="191">
-              <caret line="53" column="5" selection-start-line="53" selection-start-column="5" selection-end-line="53" selection-end-column="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/LKmath/neuralNetwork.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="172">
-              <caret line="288" column="60" selection-start-line="288" selection-start-column="60" selection-end-line="288" selection-end-column="60" />
-              <folding>
-                <element signature="e#16#62#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="3278">
+              <caret line="153" column="19" selection-start-line="153" selection-start-column="19" selection-end-line="153" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -96,70 +91,35 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/LKmath/matrix.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="130">
-              <caret line="208" selection-start-line="208" selection-end-line="208" />
-              <folding>
-                <element signature="e#906#1237#0" />
-                <element signature="e#1342#1673#0" />
-                <element signature="e#1767#2056#0" />
-                <element signature="e#2927#3099#0" />
-                <element signature="e#5279#5712#0" />
-                <element signature="e#5825#6299#0" />
-              </folding>
+            <state relative-caret-position="10824">
+              <caret line="498" column="21" selection-start-line="498" selection-start-column="21" selection-end-line="498" selection-end-column="21" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/LKmath/logisticRegression.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="317">
-              <caret line="48" column="23" selection-start-line="48" selection-start-column="23" selection-end-line="48" selection-end-column="23" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../../../../src/math/log.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-246">
-              <caret line="72" column="41" selection-start-line="72" selection-start-column="19" selection-end-line="72" selection-end-column="41" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../../../../src/time/time.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="142">
-              <caret line="843" column="14" selection-start-line="843" selection-start-column="14" selection-end-line="843" selection-end-column="14" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/main.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-176">
-              <caret line="15" column="51" lean-forward="true" selection-start-line="15" selection-start-column="51" selection-end-line="15" selection-end-column="51" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/LKmath/neuralNetworkIO.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="121">
-              <caret line="171" column="30" selection-start-line="171" selection-start-column="30" selection-end-line="171" selection-end-column="30" />
+            <state relative-caret-position="219">
+              <caret line="201" column="5" selection-start-line="201" selection-start-column="5" selection-end-line="201" selection-end-column="5" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../../../../src/os/file_windows.go">
+        <entry file="file://$PROJECT_DIR$/example/example.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="184">
-              <caret line="260" column="5" selection-start-line="260" selection-start-column="5" selection-end-line="260" selection-end-column="5" />
+            <state relative-caret-position="4620">
+              <caret line="212" column="24" selection-start-line="212" selection-start-column="24" selection-end-line="212" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/LKmath/neuralNetwork.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="5390">
+              <caret line="250" column="27" selection-start-line="250" selection-start-column="27" selection-end-line="250" selection-end-column="27" />
             </state>
           </provider>
         </entry>
@@ -214,12 +174,12 @@
         <option value="$PROJECT_DIR$/LKmath/matrix.go" />
         <option value="$PROJECT_DIR$/io/input.go" />
         <option value="$PROJECT_DIR$/io/neuralNetworkIO.go" />
-        <option value="$PROJECT_DIR$/example/example.go" />
-        <option value="$PROJECT_DIR$/LKmath/neuralNetworkIO.go" />
         <option value="$PROJECT_DIR$/LKmath/logisticRegression.go" />
-        <option value="$PROJECT_DIR$/LKmath/neuralNetwork.go" />
         <option value="$PROJECT_DIR$/main.go" />
+        <option value="$PROJECT_DIR$/LKmath/neuralNetworkIO.go" />
+        <option value="$PROJECT_DIR$/example/example.go" />
         <option value="$PROJECT_DIR$/example/Handwriting_recognization.go" />
+        <option value="$PROJECT_DIR$/LKmath/neuralNetwork.go" />
       </list>
     </option>
   </component>
@@ -229,7 +189,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-10" />
     <option name="width" value="980" />
     <option name="height" value="1090" />
@@ -353,7 +313,7 @@
     <property name="DefaultGoTemplateProperty" value="Go File" />
     <property name="go.gopath.indexing.explicitly.defined" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Number-Recognition" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
@@ -378,12 +338,12 @@
     </option>
   </component>
   <component name="RunManager" selected="Go Build.go build main.go">
-    <configuration name="go build LogisticRegression.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build Handwriting_recognization.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="Kun" />
       <working_directory value="$PROJECT_DIR$/" />
-      <go_parameters value="-i" />
       <kind value="FILE" />
-      <filePath value="$PROJECT_DIR$/LKmath/LogisticRegression.go" />
+      <filePath value="$PROJECT_DIR$/example/Handwriting_recognization.go" />
+      <package value="github.com/LuKuuu/Kun" />
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
@@ -429,31 +389,30 @@
     </configuration>
     <list>
       <item itemvalue="Go Build.go build main.go" />
-      <item itemvalue="Go Build.go build LogisticRegression.go" />
       <item itemvalue="Go Build.go build logisticRegression.go" />
       <item itemvalue="Go Build.go build neuralNetwork.go" />
       <item itemvalue="Go Build.go build example.go" />
+      <item itemvalue="Go Build.go build Handwriting_recognization.go" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Go Build.go build main.go" />
+        <item itemvalue="Go Build.go build Handwriting_recognization.go" />
         <item itemvalue="Go Build.go build example.go" />
         <item itemvalue="Go Build.go build neuralNetwork.go" />
         <item itemvalue="Go Build.go build logisticRegression.go" />
-        <item itemvalue="Go Build.go build LogisticRegression.go" />
       </list>
     </recent_temporary>
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15503356" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.27114093" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.4986979" weight="0.17304964" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49798658" visible="true" weight="0.23829788" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49798658" visible="true" weight="0.6070922" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.44113475" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -576,20 +535,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/data/neural_network_data/enn" />
-    <entry file="file://$PROJECT_DIR$/example/example.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="88">
-          <caret line="213" lean-forward="true" selection-start-line="213" selection-end-line="213" />
-          <folding>
-            <element signature="e#17#59#0" expanded="true" />
-            <element signature="n#!!block;n#TestOfNormalEquation#0" />
-            <element signature="n#!!block;n#TestOfLinearEquation#0" />
-            <element signature="n#!!block;n#ExampleOfScaringLinearRegression#0" />
-            <element signature="n#!!block;n#TestOfLogisticRegression#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/neural_network_data/enn.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2068">
@@ -625,13 +570,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../supertech/server/server.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2068">
-          <caret line="115" column="73" selection-start-line="115" selection-start-column="4" selection-end-line="115" selection-end-column="73" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/io/input.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1606">
@@ -639,11 +577,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/neural_network_data/hw.json(temp)">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-22968" />
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/data/neural_network_data/hw.json(temp)" />
     <entry file="file://$PROJECT_DIR$/../../../../../src/os/file.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="184">
@@ -686,28 +620,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/LKmath/matrix.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="130">
-          <caret line="208" selection-start-line="208" selection-end-line="208" />
-          <folding>
-            <element signature="e#906#1237#0" />
-            <element signature="e#1342#1673#0" />
-            <element signature="e#1767#2056#0" />
-            <element signature="e#2927#3099#0" />
-            <element signature="e#5279#5712#0" />
-            <element signature="e#5825#6299#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/LKmath/neuralNetworkIO.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="121">
-          <caret line="171" column="30" selection-start-line="171" selection-start-column="30" selection-end-line="171" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/LKmath/logisticRegression.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="317">
@@ -715,27 +627,55 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/LKmath/neuralNetwork.go">
+    <entry file="file://$PROJECT_DIR$/../../supertech/server/server.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="172">
-          <caret line="288" column="60" selection-start-line="288" selection-start-column="60" selection-end-line="288" selection-end-column="60" />
-          <folding>
-            <element signature="e#16#62#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="286">
+          <caret line="676" column="29" selection-start-line="676" selection-start-column="29" selection-end-line="676" selection-end-column="29" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-176">
-          <caret line="15" column="51" lean-forward="true" selection-start-line="15" selection-start-column="51" selection-end-line="15" selection-end-column="51" />
+        <state relative-caret-position="682">
+          <caret line="36" column="20" selection-start-line="36" selection-start-column="20" selection-end-line="36" selection-end-column="20" />
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/data/neural_network_data/hwT800.json">
+      <provider selected="true" editor-type-id="LargeFileEditor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/example/Handwriting_recognization.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1457">
-          <caret line="167" lean-forward="true" selection-start-line="167" selection-end-line="167" />
+        <state relative-caret-position="3278">
+          <caret line="153" column="19" selection-start-line="153" selection-start-column="19" selection-end-line="153" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LKmath/matrix.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="10824">
+          <caret line="498" column="21" selection-start-line="498" selection-start-column="21" selection-end-line="498" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/example/example.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4620">
+          <caret line="212" column="24" selection-start-line="212" selection-start-column="24" selection-end-line="212" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LKmath/neuralNetwork.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5390">
+          <caret line="250" column="27" selection-start-line="250" selection-start-column="27" selection-end-line="250" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LKmath/neuralNetworkIO.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="219">
+          <caret line="201" column="5" selection-start-line="201" selection-start-column="5" selection-end-line="201" selection-end-column="5" />
         </state>
       </provider>
     </entry>

@@ -210,7 +210,7 @@ func TestOfNeuralNetwork(){
 
 	//LKmath.SaveToJson("enn.json",&enn)
 
-	enn = LKmath.ReadFromJson("enn.json")
+	enn = LKmath.ReadFromJson("./data/neural_network_data/","enn.json")
 
 	//neuralNetworkData.Insert("enn",enn)
 

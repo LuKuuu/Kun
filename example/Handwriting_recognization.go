@@ -49,14 +49,16 @@ func Handwriting_test()  {
 
 	nna :=LKmath.NewNeuralNetworkAttribution(1)
 	nna.Cell[0][0]= float64(n)
-	nna.Cell[0][1]=100
+	nna.Cell[0][1]=800
 	nna.Cell[0][2]=10
 
 
 	hw :=LKmath.NewRandomNeuralNetwork(false, nna, 1, -1)
+	//LKmath.SaveToJson("hwT800.json", &hw)
+
 
 	for{
-		for batch:=0;batch-100<60000;batch+=100{
+		for batch:=0;batch<59000;batch+=100{
 
 			a:=batch
 			b:=batch+100
@@ -72,14 +74,13 @@ func Handwriting_test()  {
 
 			//hw.Hprint("hw")
 
-			//LKmath.SaveToJson("hwT(2).json", &hw)
 
 
 
 
 
 			//hw =LKmath.NeuralNetworkMiniBatchGradientDecent("hwT",X,Y,0.001, hw,1000)
-			hw = LKmath.NeuralNetworkGradientDecent("hwT(2)",XCut,YCut,1, hw,5)
+			hw = LKmath.NeuralNetworkGradientDecent("hwT800",XCut,YCut,0.05, hw,5)
 			fmt.Printf("\n")
 
 
@@ -101,8 +102,8 @@ func Test(){
 
 	m :=0
 	n:=0
-	a:=51000
-	b:=51010
+	a:=0
+	b:=0
 
 
 	rows, cols, imgs, err := GoMNIST.ReadImageFile("data/train-images-idx3-ubyte.gz")
@@ -139,6 +140,8 @@ func Test(){
 	X =LKmath.CutMatrix(X,0,X.Row-1, a, b)
 	Y =LKmath.CutMatrix(Y,0,Y.Row-1, a, b)
 
+	X.Hprint("X")
+
 	Y.Hprint("Y")
 
 
@@ -148,7 +151,7 @@ func Test(){
 	nna.Cell[0][2]=10
 
 	hw :=LKmath.NewRandomNeuralNetwork(false, nna, 1, 0)
-	hw=LKmath.ReadFromJson("hwT(2).json")
+	hw=LKmath.ReadFromJson("./data/neural_network_data/","hwT(2).json")
 
 
 	yHat, _ :=hw.ForwardPropagation(X)

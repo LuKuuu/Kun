@@ -248,7 +248,7 @@ func NeuralNetworkGradientDecent(NeuralNetworkName string, X Matrix, y Matrix, a
 	//NeuralNetwork,_ = neuralNetworkData.ReadFromDatabase(NeuralNetworkName, NeuralNetwork)
 
 	fmt.Printf("start reading data from JSON file...\n")
-	NeuralNetwork =ReadFromJson(NeuralNetworkName+".json")
+	NeuralNetwork =ReadFromJson("./data/neural_network_data/",NeuralNetworkName+".json")
 
 
 	//NeuralNetwork.Hprint(NeuralNetworkName +" before gradient decent")
@@ -263,6 +263,11 @@ func NeuralNetworkGradientDecent(NeuralNetworkName string, X Matrix, y Matrix, a
 
 	for{
 		times ++
+
+		if times > learningTimes{
+			break
+		}
+
 
 
 		yHat, temp := NeuralNetwork.ForwardPropagation(X)
@@ -302,9 +307,6 @@ func NeuralNetworkGradientDecent(NeuralNetworkName string, X Matrix, y Matrix, a
 
 		}
 
-		if times > learningTimes{
-			break
-		}
 
 
 		NeuralNetwork,backTemp  = UpdateFinalLayerDerivative(temp[NeuralNetwork.HiddenLayerNum-1], y, NeuralNetwork)
@@ -330,132 +332,6 @@ func NeuralNetworkGradientDecent(NeuralNetworkName string, X Matrix, y Matrix, a
 }
 
 
-
-
-func NeuralNetworkMiniBatchGradientDecent(NeuralNetworkName string, X Matrix, y Matrix, alpha float64, NeuralNetwork NeuralNetwork, learningTimes int)NeuralNetwork{
-
-	//X: data( if we have m examples and n features, X should be a (number of input layer) * m matrix)
-	//y: result (m examples means we should have m results so y should be a (number of output layer) * m matrix)
-	//NeuralNetwork a neural network
-	//alpha : learning rate (it should be carefully chose) [according to Ng, A, 0.01 is a good choice)
-
-	if X.Row != NeuralNetwork.InputLayerNum || y.Row != NeuralNetwork.OutputLayerNum || X.Column != y.Column{
-		panic("format error")
-	}
-
-	//neuralNetworkData :=NewNeuralNetworkData()
-	//neuralNetworkData.ConnectToDatabase("mysql", "root:cjkj@tcp(127.0.0.1:3306)/neural_network")
-	//
-	//fmt.Printf("start reading data from databse...\n")
-	//NeuralNetwork,_ = neuralNetworkData.ReadFromDatabase(NeuralNetworkName, NeuralNetwork)
-
-
-	NumOfBatch :=X.Column/100
-	XBatch := make([]Matrix,NumOfBatch )
-	YBatch := make([]Matrix,NumOfBatch )
-
-	for nb :=0;nb<NumOfBatch;nb++{
-		XBatch[nb]=CutMatrix(X,0,X.Row-1, nb*100,(nb+1)*100-1)
-		YBatch[nb]=CutMatrix(y,0,y.Row-1, nb*100,(nb+1)*100-1)
-	}
-
-
-
-
-	fmt.Printf("start reading data from JSON file...\n")
-	NeuralNetwork =ReadFromJson(NeuralNetworkName+".json")
-
-
-	//NeuralNetwork.Hprint(NeuralNetworkName +" before gradient decent")
-
-	fmt.Printf("start gradient decent of the neural network\n")
-
-
-	times :=0
-	t :=time.Now()
-	cost :=math.Inf(1)
-	backTemp :=Matrix{}
-
-	for{
-		times ++
-
-		yHat, _ := NeuralNetwork.ForwardPropagation(X)
-
-		fmt.Printf("finished %d forward propogation", times)
-
-		for mi :=0;mi<NumOfBatch;mi++{
-
-			_, miniTemp := NeuralNetwork.ForwardPropagation(XBatch[mi])
-
-			NeuralNetwork,backTemp  = UpdateFinalLayerDerivative(miniTemp[NeuralNetwork.HiddenLayerNum-1], YBatch[mi], NeuralNetwork)
-
-			for j :=NeuralNetwork.HiddenLayerNum-1; j>=0;j--{
-				if j ==0{
-					NeuralNetwork, backTemp = UpdateHiddenLayerDerivative(0, XBatch[mi], backTemp, NeuralNetwork)
-				}else{
-					NeuralNetwork, backTemp = UpdateHiddenLayerDerivative(j, miniTemp[j], backTemp, NeuralNetwork)
-
-				}
-			}
-
-			for j:=0; j< NeuralNetwork.HiddenLayerNum+1;j++{
-				for k :=0; k<NeuralNetwork.LayerParameter[j].NextLayerNum;k++{
-					NeuralNetwork.LayerParameter[j].NodeParameter[k].W.Update(MatrixSubtraction(NeuralNetwork.LayerParameter[j].NodeParameter[k].W, ScalarMatrix(NeuralNetwork.LayerParameter[j].NodeParameter[k].DW,alpha)))
-					NeuralNetwork.LayerParameter[j].NodeParameter[k].B -= NeuralNetwork.LayerParameter[j].NodeParameter[k].DB * alpha
-				}
-			}
-
-			fmt.Printf("finished one mini bacth\n")
-
-
-
-		}
-
-
-
-		if times%1 == 0{
-
-			d :=time.Now().Sub(t)
-			t= time.Now()
-			fmt.Printf(fmt.Sprintf("\nprogress : %f", float64(times*100)/float64(learningTimes))+"%%\n")
-			fmt.Printf("the dueration for each update is around %s\n",d.String())
-			fmt.Printf("expect to get the next result on %s\n", t.Add(d).String())
-
-
-			//NeuralNetwork.Hprint(fmt.Sprintf("\nprogress : %f", float64(times*100)/float64(learningTimes))+"%%")
-			//yHat.Hprint("yHat")
-			fmt.Printf("cost is %v\n", LogisticRegressionCostFunction(yHat,y))
-
-			if cost >= LogisticRegressionCostFunction(yHat,y){
-				cost =LogisticRegressionCostFunction(yHat,y)
-			}else{
-				alpha *=0.9
-				fmt.Printf("before, cost is %v, while cost at present is %v, cost is becoming bigger\n",cost,LogisticRegressionCostFunction(yHat,y))
-				fmt.Printf("learning rate will be changed to %f", alpha)
-			}
-			//
-			//neuralNetworkData.Insert(NeuralNetworkName, NeuralNetwork)
-			//fmt.Printf("saved to MySQL successfully!\n")
-
-			SaveToJson(NeuralNetworkName+".json", &NeuralNetwork)
-
-
-
-
-		}
-
-		if times > learningTimes{
-			break
-		}
-
-
-
-
-
-
-	}
-	return NeuralNetwork
-}
 
 
 

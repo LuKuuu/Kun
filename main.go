@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/LuKuuu/Kun/example"
 	"runtime"
 	"time"
 )
@@ -33,7 +34,7 @@ func main() {
 	//n :=LKmath.SqueezedAverageRowMatrix(m)
 	//n.Hprint("n")
 
-	//example.Handwriting_test()
+	example.Handwriting_test()
 	//example.Test()
 
 

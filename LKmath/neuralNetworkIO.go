@@ -199,10 +199,10 @@ func saveToJson(fileName string,nn *NeuralNetwork){
 }
 
 
-func ReadFromJson(fileName string)NeuralNetwork{
+func ReadFromJson(dir string,fileName string)NeuralNetwork{
 	nn := NeuralNetwork{}
 
-	fileAddress := "./data/neural_network_data/" + fileName
+	fileAddress := dir + fileName
 	data, err := ioutil.ReadFile(fileAddress)
 	if err != nil {
 		panic(err)
