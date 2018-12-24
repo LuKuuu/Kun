@@ -3,9 +3,8 @@ package LKmath
 import (
 	"fmt"
 	"math"
-	"math/rand"
-	"time"
 )
+
 /*--------------------------------------------------example--------------------------------------------------*/
 
 /*
@@ -13,283 +12,282 @@ notice: logistic regression is not only used for classification, but also used f
 
 for convenient,
 1. the features matrix X should has n(features) rows and m(number of examples) columns
-2. the result matrix y   should has 1 row and m columns
-3. there should be one parameter b for each logistical regression as bias
-4. features parameter is noted as W which is a n by 1 matrix
+2. the result matrix y   should has rn(result features) row and m columns
+3. there should be one parameter b for each logistical regression as bias; therefore, there should be a basis matrix
+	it should has rn rows and 1 column
+4. features parameter is noted as W which is a n by rn matrix
 
 here are the relationship between them
+
+yHat=sigmoid(W*X+ b)
 
 
  */
 
-/*--------------------------------------------------NodeParameter---------------------------------------------------------*/
+/*--------------------------------------------------LayerParameter---------------------------------------------------------*/
 
-
-
-type NodeParameter struct {
-	W Matrix
-	B float64
-	DW Matrix
-	DB float64
+type LayerParameter struct {
+	FeatureNum int
+	OutputNum  int
+	W          Matrix
+	B          Matrix
+	dW         Matrix
+	dB         Matrix
 }
 
-func NewEmptyNode(featureNum int)NodeParameter{
-	return NodeParameter{NewValuedMatrix(1,featureNum, 0), 0,NewValuedMatrix(1,featureNum, 0), 0}
-}
-
-func NewValuedNode(featureNum int, value float64)NodeParameter{
-	return NodeParameter{NewValuedMatrix(1,featureNum, value), value,NewValuedMatrix(1,featureNum, 0), 0}
-}
-
-func NewRandomNode(initialize bool, featureNum int, max float64, min float64)NodeParameter {
-	if initialize {
-		rand.Seed(time.Now().Unix())
+func NewEmptyNode(featureNum int, outputNum int) LayerParameter {
+	return LayerParameter{
+		featureNum, outputNum,
+		NewValuedMatrix(outputNum, featureNum, 0),
+		NewValuedMatrix(outputNum, 1, 0),
+		NewValuedMatrix(outputNum, featureNum, 0),
+		NewValuedMatrix(outputNum, 1, 0),
 	}
-	np :=NodeParameter{NewRandomMatrix(initialize, 1, featureNum, max, min), 0,NewValuedMatrix(1,featureNum, 0), 0}
-	np.B=-Sum(np.W)*0.5
-	return np
 }
 
-func (this *NodeParameter)Update(np NodeParameter){
+func NewValuedNode(featureNum int, outputNum int, value float64) LayerParameter {
+	return LayerParameter{
+		featureNum, outputNum,
+		NewValuedMatrix(outputNum, featureNum, value),
+		NewValuedMatrix(outputNum, 1, value),
+		NewValuedMatrix(outputNum, featureNum, 0),
+		NewValuedMatrix(outputNum, 1, 0),
+	}
+}
+
+func NewRandomNode(featureNum int, outputNum int, max float64, min float64) LayerParameter {
+
+	return LayerParameter{
+		featureNum, outputNum,
+		NewRandomMatrix(outputNum, featureNum, max, min),
+		NewRandomMatrix(outputNum, 1, max, min),
+		NewValuedMatrix(outputNum, featureNum, 0),
+		NewValuedMatrix(outputNum, 1, 0),
+	}
+}
+
+func (this *LayerParameter) Update(np LayerParameter) {
+
+	if this.FeatureNum != np.FeatureNum || this.OutputNum != np.OutputNum {
+		panic("format error")
+	}
 
 	this.W.Update(np.W)
-	this.B=np.B
-	this.DW.Update(np.DW)
-	this.DB=np.DB
+	this.B.Update(np.B)
+	this.dW.Update(np.dW)
+	this.dB.Update(np.dB)
 }
 
-func (this *NodeParameter)Hprint(info string){
-	fmt.Printf(info+"\n")
+func (this *LayerParameter) Hprint(info string) {
+	fmt.Printf(info + "\n")
 
-	fmt.Printf("W:\n")
+	fmt.Printf("parameter:\n")
+
 	for i := 0; i < this.W.Row; i++ {
-		s := ""
+		s := fmt.Sprintf("B: %f \t\t|W:\t", this.B.Cell[i][0])
 		for j := 0; j < this.W.Column; j++ {
-			s = s + fmt.Sprintf("%f\t",this.W.Cell[i][j])
+			s = s + fmt.Sprintf("%f \t", this.W.Cell[i][j])
 		}
 		fmt.Printf("%s\n", s)
 
 	}
 
-	fmt.Printf("B: %f\n", this.B)
-
-	fmt.Printf("dW:\n")
-	for i := 0; i < this.DW.Row; i++ {
-		s := ""
-		for j := 0; j < this.DW.Column; j++ {
-			s = s + fmt.Sprintf("%f\t",this.DW.Cell[i][j])
+	fmt.Printf("derivative of parameter:\n")
+	for i := 0; i < this.W.Row; i++ {
+		s := fmt.Sprintf("dB: %f \t\t|dW:\t", this.dB.Cell[i][0])
+		for j := 0; j < this.W.Column; j++ {
+			s = s + fmt.Sprintf("%f \t", this.dW.Cell[i][j])
 		}
 		fmt.Printf("%s\n", s)
 
 	}
-	fmt.Printf("dB: %f\n", this.DB)
+
 	fmt.Println()
 }
 
 //Sigmoid Functions
 
-func SigmoidFunction(x float64)float64{
-	return 1/(1+ math.Exp(-x))
+func SigmoidFunction(x float64) float64 {
+	return 1 / (1 + math.Exp(-x))
 }
 
-func SigmoidFunctionForMatrix(m Matrix)Matrix{
+func SigmoidFunctionForMatrix(m Matrix) Matrix {
 	resultMatrix := NewCopyMatrix(m)
-	for i := 0; i < m.Row; i++{
-		for j := 0; j < m.Column; j ++{
+	for i := 0; i < m.Row; i++ {
+		for j := 0; j < m.Column; j ++ {
 			resultMatrix.Cell[i][j] = SigmoidFunction(m.Cell[i][j])
 		}
 	}
 	return resultMatrix
 }
 
-func DerivativeOfSigmoidFunction(x float64)float64{
-	return SigmoidFunction(x) * (1- SigmoidFunction(x))
+func DerivativeOfSigmoidFunction(x float64) float64 {
+	return SigmoidFunction(x) * (1 - SigmoidFunction(x))
 }
 
-func DerivativeOfSigmoidFunctionForMatrix(yHatMatrix Matrix)Matrix{
+func DerivativeOfSigmoidFunctionForMatrix(yHatMatrix Matrix) Matrix {
 	resultMatrix := NewCopyMatrix(yHatMatrix)
-	for i := 0; i < yHatMatrix.Row; i++{
-		for j := 0; j < yHatMatrix.Column; j ++{
-			resultMatrix.Cell[i][j] = (yHatMatrix.Cell[i][j]) * (1 - yHatMatrix.Cell[i][j])
+	for i := 0; i < yHatMatrix.Row; i++ {
+		for j := 0; j < yHatMatrix.Column; j ++ {
+			resultMatrix.Cell[i][j] = DerivativeOfSigmoidFunction(yHatMatrix.Cell[i][j])
 		}
 	}
 	return resultMatrix
 }
 
-
-func YHat(X Matrix, parameter NodeParameter)Matrix{
-	bMatrix := NewValuedMatrix(1, X.Column, parameter.B)
+func YHat(X Matrix, parameter LayerParameter) Matrix {
+	bMatrix := parameter.ExpandedB(X.Column)
 	//yHat = sigmoid(transpose(W)*X + b)
 	return SigmoidFunctionForMatrix(MatrixAddition(MatrixMultiplication(parameter.W, X), bMatrix))
 }
 
+func (parameter *LayerParameter)YHat(X Matrix)Matrix {
+	bMatrix := parameter.ExpandedB(X.Column)
+	//yHat = sigmoid(transpose(W)*X + b)
+	return SigmoidFunctionForMatrix(MatrixAddition(MatrixMultiplication(parameter.W, X), bMatrix))
+}
+
+func (this *LayerParameter) ExpandedB(n int) Matrix {
+	result := NewEmptyMatrix(this.B.Row, n)
+	for i := 0; i < result.Row; i++ {
+		for j := 0; j < result.Column; j++ {
+			result.Cell[i][j] = this.B.Cell[i][0]
+		}
+	}
+	return result
+}
 
 //loss/cost functions
 
-func LogisticRegressionLossFunction(yHat float64, y float64)float64{
+func LogisticRegressionLossFunction(yHat float64, y float64) float64 {
 
 	//return -(y * math.Log(yHat)+ (1-y)*(math.Log(1-yHat)))
 	// this sometime will make a stupid return "Not a Number" because it will calculate 0 * inf first
 
-	if y == 0{
-		return - math.Log(1-yHat)
-	}else{
+	if y < 0.5 {
+		return - math.Log(1 - yHat)
+	} else {
 		return - math.Log(yHat)
 	}
 }
-func LogisticRegressionLossFunctionForMatrix(yHatMatrix Matrix, yMatrix Matrix)Matrix{
-	result :=NewEmptyMatrix(1, yHatMatrix.Column)
-	for i := 0; i < yHatMatrix.Column; i ++{
-		result.Cell[0][i] = LogisticRegressionLossFunction(yHatMatrix.Cell[0][i], yMatrix.Cell[0][i])
+func LogisticRegressionLossFunctionForMatrix(yHatMatrix Matrix, yMatrix Matrix) Matrix {
+
+	if (yHatMatrix.Column != yMatrix.Column) || (yHatMatrix.Row != yMatrix.Row) {
+		panic("LogisticRegressionCostFunction : format error")
 	}
+	result := NewEmptyMatrix( yHatMatrix.Row, yHatMatrix.Column)
+
+	for i := 0; i < result.Row; i++ {
+		for j := 0; j < result.Column; j ++ {
+			result.Cell[i][j] = LogisticRegressionLossFunction(yHatMatrix.Cell[i][j], yMatrix.Cell[i][j])
+		}
+	}
+
 	return result
 }
 
+func LogisticRegressionCostFunction(yHatMatrix Matrix, yMatrix Matrix) float64 {
 
-func DerivativeOfLogisticRegressionLossFunction(yHat float64, y float64)float64{
+	return Average(LogisticRegressionLossFunctionForMatrix(yHatMatrix, yMatrix))
 
+}
+
+func DerivativeOfLogisticRegressionLossFunction(yHat float64, y float64) float64 {
 
 	//return -(y/yHat)+((1-y)/(1-yHat))
 	//this will result Not a Number sometime because it will calculate 0/0 instead of ignoring the part with numerator == 0
 
-	if y == 0{
-		return 1/(1-yHat)
-	}else{
-		return -1/yHat
+	if y == 0 {
+		return 1 / (1 - yHat)
+	} else {
+		return -1 / yHat
 	}
 }
 
-func DerivativeOfLogisticRegressionLossFunctionForMatrix(yHatMatrix Matrix, yMatrix Matrix)Matrix{
-	result :=NewEmptyMatrix(1, yHatMatrix.Column)
-	for i := 0; i < yHatMatrix.Column; i ++{
-		result.Cell[0][i] = DerivativeOfLogisticRegressionLossFunction(yHatMatrix.Cell[0][i], yMatrix.Cell[0][i])
+func DerivativeOfLogisticRegressionLossFunctionForMatrix(yHatMatrix Matrix, yMatrix Matrix) Matrix {
+	result := NewEmptyMatrix(yHatMatrix.Row, yHatMatrix.Column)
+
+	for i := 0; i < result.Row; i++ {
+		for j := 0; j < result.Column; j ++ {
+			result.Cell[i][j] = DerivativeOfLogisticRegressionLossFunction(yHatMatrix.Cell[i][j], yMatrix.Cell[i][j])
+		}
 	}
+
 	return result
 }
 
-const maxValue = 0
-func FinalDerivativeOfLogisticRegressionForMatrix(yHatMatrix Matrix, yMatrix Matrix)Matrix {
+func FinalDerivativeOfLogisticRegressionForMatrix(LastDerivativeMatrix Matrix, yHatMatrix Matrix) Matrix {
 
-	if yHatMatrix.Column != yMatrix.Column{
+	if yHatMatrix.Column != LastDerivativeMatrix.Column || yHatMatrix.Row != LastDerivativeMatrix.Row {
 		panic("FinalDerivativeOfLogisticRegressionForMatrix: format error")
 	}
-	da := DerivativeOfLogisticRegressionLossFunctionForMatrix(yHatMatrix, yMatrix)
 	dl := DerivativeOfSigmoidFunctionForMatrix(yHatMatrix)
 
-
-	result :=NewEmptyMatrix(1, da.Column)
-	for i:=0; i< da.Column; i++{
-		result.Cell[0][i] = da.Cell[0][i] * dl.Cell[0][i]
-		//to prevent the problem of not a number
-		if math.IsNaN(result.Cell[0][i]){
-			result.Cell[0][i] = math.MaxFloat64
-		}
-	}
-
-	return result
-
+	return DotProduct(LastDerivativeMatrix, dl)
 
 }
 
-func LogisticRegressionCostFunction(yHatMatrix Matrix, yMatrix Matrix)float64{
-	if ( yHatMatrix.Column != yMatrix.Column)||(yHatMatrix.Row != yMatrix.Row){
-		panic("LogisticRegressionCostFunction : format error")
-	}
+func (this *LayerParameter) UpdateDerivative(X Matrix, y Matrix) (derivativeMatrix Matrix) {
 
-	size := yMatrix.Column
-	features :=yHatMatrix.Row
-	result := 0.0
+	yHatMatrix := this.YHat(X)
 
-	for j:=0; j< features;j++{
-		for i := 0; i < size; i++{
-			result +=LogisticRegressionLossFunction(yHatMatrix.Cell[j][i],yMatrix.Cell[j][i])
-		}
-	}
+	da := DerivativeOfLogisticRegressionLossFunctionForMatrix(yHatMatrix, y)
 
+	finalDerivative := FinalDerivativeOfLogisticRegressionForMatrix(da, yHatMatrix)
 
-	return result/float64(size*features)
+	this.dW= ScalarMatrix(MatrixMultiplication(finalDerivative, TransposeMatrix(X)), 1/float64(X.Column))
+
+	this.dB= SqueezedAverageRowMatrix(finalDerivative)
+
+	return  finalDerivative
 
 }
 
 
+func (this *LayerParameter) UpdateDerivativeWithDerivative(X Matrix, lastDerivativeMatrix Matrix) (derivativeMatrix Matrix) {
 
-func DerivativeOfLogisticalRegressionCostFunction(X Matrix, yMatrix Matrix, parameter NodeParameter)(NodeParameter, Matrix){
+	yHatMatrix := this.YHat(X)
 
+	finalDerivative := FinalDerivativeOfLogisticRegressionForMatrix(lastDerivativeMatrix, yHatMatrix)
 
-	yHatMatrix :=YHat(X, parameter)
+	this.dW= ScalarMatrix(MatrixMultiplication(finalDerivative, TransposeMatrix(X)), 1/float64(X.Column))
 
-	finalDerivative :=FinalDerivativeOfLogisticRegressionForMatrix(yHatMatrix, yMatrix)
+	this.dB= SqueezedAverageRowMatrix(finalDerivative)
 
-	dW := ScalarMatrix(MatrixMultiplication(finalDerivative, TransposeMatrix(X)), 1/float64(X.Column))
-
-	dB :=Average(finalDerivative)
-
-	return NodeParameter{parameter.W, parameter.B, dW, dB}, finalDerivative
-
-
-
-
-
+	return  finalDerivative
 
 }
-
 /*---------------------------------gradient decent------------------------------*/
 
-func LogisticRegressionGradientDecent(X Matrix, y Matrix, alpha float64, startParameter NodeParameter, learningTimes int)NodeParameter{
+func LogisticRegressionGradientDecent(X Matrix, y Matrix, alpha float64, startParameter LayerParameter, learningTimes int) LayerParameter {
 
 	//X: data( if we have m examples and n features, X should be an n * m matrix)
 	//y: result (m examples means we should have m results so y should be a 1 * m matrix)
 	//startParameter (	an 1 * n matrix with parameters
-	//			  		and a	parameter b we want to start the gradient decent
+	//			  		and a	startParameter b we want to start the gradient decent
 	//alpha : learning rate (it should be carefully chose)
 
-	if X.Row != startParameter.W.Column || X.Column != y.Column{
+	if X.Row != startParameter.FeatureNum || startParameter.OutputNum != y.Row || X.Column != y.Column {
 		panic("format error")
 	}
 
 	fmt.Printf("start logistic regression\n")
 
+	parameter := NewEmptyNode(startParameter.FeatureNum, startParameter.OutputNum)
+	parameter.Update(startParameter)
+	for i := 0; i < learningTimes; i++ {
+		parameter.UpdateDerivative(X,y)
+		parameter.W.Update(MatrixSubtraction(parameter.W, ScalarMatrix(parameter.dW, alpha)))
+		parameter.B.Update(MatrixSubtraction(parameter.B, ScalarMatrix(parameter.dB, alpha)))
 
-	parameterW := NewCopyMatrix(startParameter.W)
-	ParameterB := startParameter.B
-	parameter := NodeParameter{parameterW, ParameterB, NewEmptyMatrix(parameterW.Row, parameterW.Column), 0}
+		if i%50000== 0 {
 
-	times := 0
-
-	for{
-		times ++
-		d, _:=DerivativeOfLogisticalRegressionCostFunction(X, y,parameter)
-		parameter.Update(d)
-		if times%5000 == 0{
-
-			parameter.Hprint(fmt.Sprintf("\nprogress : %f", float64(times*100)/float64(learningTimes))+"%%")
+			fmt.Printf("cost is :%f\n",LogisticRegressionCostFunction(parameter.YHat(X),y))
+			parameter.Hprint(fmt.Sprintf("\nprogress : %f", float64(i*100)/float64(learningTimes)) + "%%")
 
 		}
-
-		//pass := true
-		//for i := 0; i < derivative.W.Row; i++{
-		//	if derivative.W.Cell[i][0] > 0.01 || derivative.W.Cell[i][0] < (-0.01){
-		//		pass = false
-		//		break
-		//	}
-		//}
-		//if derivative.B > 0.01 || derivative.B < (-0.01){
-		//	pass = false
-		//	break
-		//}
-		//
-		//if pass == true{
-		//	break
-		//}
-
-		if times > learningTimes{
-			break
-		}
-
-		parameter.W = MatrixSubtraction(parameter.W, ScalarMatrix(parameter.DW,alpha))
-		parameter.B -= alpha * parameter.DB
 
 	}
 
-	return parameter
+	return startParameter
 }
