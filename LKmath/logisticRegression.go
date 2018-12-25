@@ -31,11 +31,11 @@ type LayerParameter struct {
 	OutputNum  int
 	W          Matrix
 	B          Matrix
-	dW         Matrix
-	dB         Matrix
+	DW         Matrix
+	DB         Matrix
 }
 
-func NewEmptyNode(featureNum int, outputNum int) LayerParameter {
+func NewEmptyLayer(featureNum int, outputNum int) LayerParameter {
 	return LayerParameter{
 		featureNum, outputNum,
 		NewValuedMatrix(outputNum, featureNum, 0),
@@ -45,7 +45,7 @@ func NewEmptyNode(featureNum int, outputNum int) LayerParameter {
 	}
 }
 
-func NewValuedNode(featureNum int, outputNum int, value float64) LayerParameter {
+func NewValuedLayer(featureNum int, outputNum int, value float64) LayerParameter {
 	return LayerParameter{
 		featureNum, outputNum,
 		NewValuedMatrix(outputNum, featureNum, value),
@@ -55,12 +55,15 @@ func NewValuedNode(featureNum int, outputNum int, value float64) LayerParameter 
 	}
 }
 
-func NewRandomNode(featureNum int, outputNum int, max float64, min float64) LayerParameter {
+func NewRandomLayer(featureNum int, outputNum int, max float64, min float64) LayerParameter {
+
+
+	w:=	NewRandomMatrix(outputNum, featureNum, max, min)
+	b:=ScalarMatrix(SqueezedSumRowMatrix(w),-0.5)
 
 	return LayerParameter{
 		featureNum, outputNum,
-		NewRandomMatrix(outputNum, featureNum, max, min),
-		NewRandomMatrix(outputNum, 1, max, min),
+		w,b,
 		NewValuedMatrix(outputNum, featureNum, 0),
 		NewValuedMatrix(outputNum, 1, 0),
 	}
@@ -74,8 +77,8 @@ func (this *LayerParameter) Update(np LayerParameter) {
 
 	this.W.Update(np.W)
 	this.B.Update(np.B)
-	this.dW.Update(np.dW)
-	this.dB.Update(np.dB)
+	this.DW.Update(np.DW)
+	this.DB.Update(np.DB)
 }
 
 func (this *LayerParameter) Hprint(info string) {
@@ -94,9 +97,9 @@ func (this *LayerParameter) Hprint(info string) {
 
 	fmt.Printf("derivative of parameter:\n")
 	for i := 0; i < this.W.Row; i++ {
-		s := fmt.Sprintf("dB: %f \t\t|dW:\t", this.dB.Cell[i][0])
+		s := fmt.Sprintf("DB: %f \t\t|DW:\t", this.DB.Cell[i][0])
 		for j := 0; j < this.W.Column; j++ {
-			s = s + fmt.Sprintf("%f \t", this.dW.Cell[i][j])
+			s = s + fmt.Sprintf("%f \t", this.DW.Cell[i][j])
 		}
 		fmt.Printf("%s\n", s)
 
@@ -129,7 +132,7 @@ func DerivativeOfSigmoidFunctionForMatrix(yHatMatrix Matrix) Matrix {
 	resultMatrix := NewCopyMatrix(yHatMatrix)
 	for i := 0; i < yHatMatrix.Row; i++ {
 		for j := 0; j < yHatMatrix.Column; j ++ {
-			resultMatrix.Cell[i][j] = DerivativeOfSigmoidFunction(yHatMatrix.Cell[i][j])
+			resultMatrix.Cell[i][j] =  (yHatMatrix.Cell[i][j]) * (1 - yHatMatrix.Cell[i][j])
 		}
 	}
 	return resultMatrix
@@ -235,11 +238,12 @@ func (this *LayerParameter) UpdateDerivative(X Matrix, y Matrix) (derivativeMatr
 
 	finalDerivative := FinalDerivativeOfLogisticRegressionForMatrix(da, yHatMatrix)
 
-	this.dW= ScalarMatrix(MatrixMultiplication(finalDerivative, TransposeMatrix(X)), 1/float64(X.Column))
+	this.DW = ScalarMatrix(MatrixMultiplication(finalDerivative, TransposeMatrix(X)), 1/float64(X.Column))
 
-	this.dB= SqueezedAverageRowMatrix(finalDerivative)
+	this.DB = SqueezedAverageRowMatrix(finalDerivative)
 
-	return  finalDerivative
+	derivativeMatrix =ScalarMatrix(MatrixMultiplication(TransposeMatrix(this.W),finalDerivative),float64(this.OutputNum))
+	return  derivativeMatrix
 
 }
 
@@ -250,44 +254,42 @@ func (this *LayerParameter) UpdateDerivativeWithDerivative(X Matrix, lastDerivat
 
 	finalDerivative := FinalDerivativeOfLogisticRegressionForMatrix(lastDerivativeMatrix, yHatMatrix)
 
-	this.dW= ScalarMatrix(MatrixMultiplication(finalDerivative, TransposeMatrix(X)), 1/float64(X.Column))
+	this.DW = ScalarMatrix(MatrixMultiplication(finalDerivative, TransposeMatrix(X)), 1/float64(X.Column))
 
-	this.dB= SqueezedAverageRowMatrix(finalDerivative)
+	this.DB = SqueezedAverageRowMatrix(finalDerivative)
 
-	return  finalDerivative
+	derivativeMatrix =ScalarMatrix(MatrixMultiplication(TransposeMatrix(this.W),finalDerivative),float64(this.OutputNum))
+	return  derivativeMatrix
 
 }
 /*---------------------------------gradient decent------------------------------*/
 
-func LogisticRegressionGradientDecent(X Matrix, y Matrix, alpha float64, startParameter LayerParameter, learningTimes int) LayerParameter {
+func (this *LayerParameter) GradientDecent(X Matrix, y Matrix, alpha float64, learningTimes int)  {
 
 	//X: data( if we have m examples and n features, X should be an n * m matrix)
 	//y: result (m examples means we should have m results so y should be a 1 * m matrix)
-	//startParameter (	an 1 * n matrix with parameters
-	//			  		and a	startParameter b we want to start the gradient decent
+	//this (	an 1 * n matrix with parameters
+	//			  		and a	this b we want to start the gradient decent
 	//alpha : learning rate (it should be carefully chose)
 
-	if X.Row != startParameter.FeatureNum || startParameter.OutputNum != y.Row || X.Column != y.Column {
+	if X.Row != this.FeatureNum || this.OutputNum != y.Row || X.Column != y.Column {
 		panic("format error")
 	}
 
 	fmt.Printf("start logistic regression\n")
 
-	parameter := NewEmptyNode(startParameter.FeatureNum, startParameter.OutputNum)
-	parameter.Update(startParameter)
 	for i := 0; i < learningTimes; i++ {
-		parameter.UpdateDerivative(X,y)
-		parameter.W.Update(MatrixSubtraction(parameter.W, ScalarMatrix(parameter.dW, alpha)))
-		parameter.B.Update(MatrixSubtraction(parameter.B, ScalarMatrix(parameter.dB, alpha)))
+		this.UpdateDerivative(X,y)
+		this.W.Update(MatrixSubtraction(this.W, ScalarMatrix(this.DW, alpha)))
+		this.B.Update(MatrixSubtraction(this.B, ScalarMatrix(this.DB, alpha)))
 
 		if i%50000== 0 {
 
-			fmt.Printf("cost is :%f\n",LogisticRegressionCostFunction(parameter.YHat(X),y))
-			parameter.Hprint(fmt.Sprintf("\nprogress : %f", float64(i*100)/float64(learningTimes)) + "%%")
+			fmt.Printf("cost is :%f\n",LogisticRegressionCostFunction(this.YHat(X),y))
+			this.Hprint(fmt.Sprintf("\nprogress : %f", float64(i*100)/float64(learningTimes)) + "%%")
 
 		}
 
 	}
 
-	return startParameter
 }
