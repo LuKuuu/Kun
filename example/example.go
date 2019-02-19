@@ -151,7 +151,7 @@ func TestOfLogisticRegression(){
 	//X.Hprint("X is: ")
 	//y.Hprint("y is: ")
 
-	Parameter := LKmath.NewRandomNode(m,om,1,-1)
+	Parameter := LKmath.NewRandomLayer(m,om,1,-1)
 
 	Parameter.Hprint("parameter")
 
@@ -165,7 +165,7 @@ func TestOfLogisticRegression(){
 	//backMatrix.Hprint("backMatrix")
 
 
-	LKmath.LogisticRegressionGradientDecent(X, y, 0.001,Parameter, 100000000000000000 )
+	Parameter.GradientDecent(X, y, 0.001, 100000000000000000 )
 
 
 
