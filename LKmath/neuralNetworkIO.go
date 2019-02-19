@@ -1,13 +1,4 @@
 package LKmath
-
-import (
-	"bufio"
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"os"
-)
-
 //
 //import (
 //	"bufio"
@@ -17,11 +8,12 @@ import (
 //	_ "github.com/go-sql-driver/mysql"
 //	"io/ioutil"
 //	"os"
+//	"time"
 //)
 //
 //
 //type NeuralNetworkData struct {
-//	database *sql.DB
+//	database *sql.dB
 //	err error
 //}
 //
@@ -173,60 +165,76 @@ import (
 //
 //}
 //
-
-//to prevent error in writing
-func (this *NeuralNetwork)SaveToJson(dir string){
-
-	this.saveToJsonAsTemp(dir)
-	err:=os.Remove(dir +this.Name+".json")
-	if err!=nil{
-		fmt.Printf("error:%v",err)
-	}
-	err=os.Rename(dir+this.Name+"(temp).json", dir+this.Name+".json")
-	if err!=nil{
-		panic(err)
-	}
-
-}
-
-const DefaultNeuralNetworkDirection ="data/neural_network_data/"
-
-func (this *NeuralNetwork) saveToJsonAsTemp(dir string){
-
-	JSON, MarshalErr := json.MarshalIndent(&this, "", "\t")
-	if MarshalErr !=nil{
-		panic(MarshalErr)
-	}
-
-	fileAddress := dir +this.Name+"(temp).json"
-	outputFile, outputError := os.OpenFile(fileAddress, os.O_CREATE, 0666)
-	if outputError != nil {
-		panic(outputError)
-	}
-	defer outputFile.Close()
-	outputWriter := bufio.NewWriter(outputFile)
-	outputWriter.WriteString(string(JSON))
-	outputWriter.Flush()
-
-	fmt.Printf("successfully save neuralnetwork to %s\n",fileAddress)
-}
-
-
-func (this *NeuralNetwork)ReadFromJson(dir string,neuralNetworkName string){
-
-	fileAddress := dir+neuralNetworkName+".json"
-	data, err := ioutil.ReadFile(fileAddress)
-	if err != nil {
-		panic(err)
-	} else {
-		fmt.Printf("Loading data from %s\n", fileAddress)
-	}
-
-	unmarshalErr := json.Unmarshal(data, &this)
-	if unmarshalErr != nil {
-		panic(unmarshalErr)
-	}
-
-	fmt.Printf("successfully read neural network from %s\n",fileAddress)
-
-}
+//
+////to prevent error in writing
+//func (this *NeuralNetwork)SaveToJson(dir string){
+//
+//	this.saveToJsonAsTemp(dir)
+//
+//	for ;;{
+//		err:=os.Remove(dir +this.Name+".json")
+//		if err!=nil{
+//			fmt.Printf("error:%v",err)
+//			time.Sleep(time.Second)
+//			break
+//		}else{
+//			break
+//		}
+//
+//	}
+//
+//	for ;;{
+//		err:=os.Rename(dir+this.Name+"(temp).json", dir+this.Name+".json")
+//		if err!=nil{
+//			fmt.Printf("error:%v",err)
+//			time.Sleep(time.Second)
+//		}else{
+//			break
+//		}
+//
+//	}
+//
+//
+//}
+//
+//const DefaultNeuralNetworkDirection ="data/neural_network_data/"
+//
+//func (this *NeuralNetwork) saveToJsonAsTemp(dir string){
+//
+//	JSON, MarshalErr := json.MarshalIndent(&this, "", "\t")
+//	if MarshalErr !=nil{
+//		panic(MarshalErr)
+//	}
+//
+//	fileAddress := dir +this.Name+"(temp).json"
+//	outputFile, outputError := os.OpenFile(fileAddress, os.O_CREATE, 0666)
+//	if outputError != nil {
+//		panic(outputError)
+//	}
+//	defer outputFile.Close()
+//	outputWriter := bufio.NewWriter(outputFile)
+//	outputWriter.WriteString(string(JSON))
+//	outputWriter.Flush()
+//
+//	fmt.Printf("successfully save neuralnetwork to %s\n",fileAddress)
+//}
+//
+//
+//func (this *NeuralNetwork)ReadFromJson(dir string,neuralNetworkName string){
+//
+//	fileAddress := dir+neuralNetworkName+".json"
+//	data, err := ioutil.ReadFile(fileAddress)
+//	if err != nil {
+//		panic(err)
+//	} else {
+//		fmt.Printf("Loading data from %s\n", fileAddress)
+//	}
+//
+//	unmarshalErr := json.Unmarshal(data, &this)
+//	if unmarshalErr != nil {
+//		panic(unmarshalErr)
+//	}
+//
+//	fmt.Printf("successfully read neural network from %s\n",fileAddress)
+//
+//}

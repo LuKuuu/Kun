@@ -22,7 +22,7 @@ here are the relationship between them
 yHat=sigmoid(W*X+ b)
 
 
- */
+*/
 
 /*--------------------------------------------------LayerParameter---------------------------------------------------------*/
 
@@ -31,8 +31,8 @@ type LayerParameter struct {
 	OutputNum  int
 	W          Matrix
 	B          Matrix
-	DW         Matrix
-	DB         Matrix
+	dW         Matrix
+	dB         Matrix
 }
 
 func NewEmptyLayer(featureNum int, outputNum int) LayerParameter {
@@ -58,12 +58,13 @@ func NewValuedLayer(featureNum int, outputNum int, value float64) LayerParameter
 func NewRandomLayer(featureNum int, outputNum int, max float64, min float64) LayerParameter {
 
 
-	w:=	NewRandomMatrix(outputNum, featureNum, max, min)
-	b:=ScalarMatrix(SqueezedSumRowMatrix(w),-0.5)
+	//w:=	NewRandomMatrix(outputNum, featureNum, max, min)
+	//b:=ScalarMatrix(SqueezedSumRowMatrix(w),-0.5)
 
 	return LayerParameter{
 		featureNum, outputNum,
-		w,b,
+		NewRandomMatrix(outputNum, featureNum, max/float64(featureNum), min/float64(featureNum)),
+		NewRandomMatrix(outputNum, 1, max, min),
 		NewValuedMatrix(outputNum, featureNum, 0),
 		NewValuedMatrix(outputNum, 1, 0),
 	}
@@ -77,8 +78,8 @@ func (this *LayerParameter) Update(np LayerParameter) {
 
 	this.W.Update(np.W)
 	this.B.Update(np.B)
-	this.DW.Update(np.DW)
-	this.DB.Update(np.DB)
+	this.dW.Update(np.dW)
+	this.dB.Update(np.dB)
 }
 
 func (this *LayerParameter) Hprint(info string) {
@@ -97,9 +98,9 @@ func (this *LayerParameter) Hprint(info string) {
 
 	fmt.Printf("derivative of parameter:\n")
 	for i := 0; i < this.W.Row; i++ {
-		s := fmt.Sprintf("DB: %f \t\t|DW:\t", this.DB.Cell[i][0])
+		s := fmt.Sprintf("dB: %f \t\t|dW:\t", this.dB.Cell[i][0])
 		for j := 0; j < this.W.Column; j++ {
-			s = s + fmt.Sprintf("%f \t", this.DW.Cell[i][j])
+			s = s + fmt.Sprintf("%f \t", this.dW.Cell[i][j])
 		}
 		fmt.Printf("%s\n", s)
 
@@ -238,9 +239,24 @@ func (this *LayerParameter) UpdateDerivative(X Matrix, y Matrix) (derivativeMatr
 
 	finalDerivative := FinalDerivativeOfLogisticRegressionForMatrix(da, yHatMatrix)
 
-	this.DW = ScalarMatrix(MatrixMultiplication(finalDerivative, TransposeMatrix(X)), 1/float64(X.Column))
+	this.dW = ScalarMatrix(MatrixMultiplication(finalDerivative, TransposeMatrix(X)), 1/float64(X.Column))
 
-	this.DB = SqueezedAverageRowMatrix(finalDerivative)
+	this.dB = SqueezedAverageRowMatrix(finalDerivative)
+
+	derivativeMatrix =ScalarMatrix(MatrixMultiplication(TransposeMatrix(this.W),finalDerivative),float64(this.OutputNum))
+	return  derivativeMatrix
+
+}
+
+
+func (this *LayerParameter) UpdateDerivativeForSoftMax(yHat Matrix, X Matrix, y Matrix) (derivativeMatrix Matrix) {
+
+
+	finalDerivative := DerivativeOfSoftMaxCostFunctionForMatrix(yHat, y)
+
+	this.dW = ScalarMatrix(MatrixMultiplication(finalDerivative, TransposeMatrix(X)), 1/float64(X.Column))
+
+	this.dB = SqueezedAverageRowMatrix(finalDerivative)
 
 	derivativeMatrix =ScalarMatrix(MatrixMultiplication(TransposeMatrix(this.W),finalDerivative),float64(this.OutputNum))
 	return  derivativeMatrix
@@ -254,14 +270,18 @@ func (this *LayerParameter) UpdateDerivativeWithDerivative(X Matrix, lastDerivat
 
 	finalDerivative := FinalDerivativeOfLogisticRegressionForMatrix(lastDerivativeMatrix, yHatMatrix)
 
-	this.DW = ScalarMatrix(MatrixMultiplication(finalDerivative, TransposeMatrix(X)), 1/float64(X.Column))
+	this.dW = ScalarMatrix(MatrixMultiplication(finalDerivative, TransposeMatrix(X)), 1/float64(X.Column))
 
-	this.DB = SqueezedAverageRowMatrix(finalDerivative)
+	this.dB = SqueezedAverageRowMatrix(finalDerivative)
 
 	derivativeMatrix =ScalarMatrix(MatrixMultiplication(TransposeMatrix(this.W),finalDerivative),float64(this.OutputNum))
 	return  derivativeMatrix
 
 }
+
+
+
+
 /*---------------------------------gradient decent------------------------------*/
 
 func (this *LayerParameter) GradientDecent(X Matrix, y Matrix, alpha float64, learningTimes int)  {
@@ -280,8 +300,8 @@ func (this *LayerParameter) GradientDecent(X Matrix, y Matrix, alpha float64, le
 
 	for i := 0; i < learningTimes; i++ {
 		this.UpdateDerivative(X,y)
-		this.W.Update(MatrixSubtraction(this.W, ScalarMatrix(this.DW, alpha)))
-		this.B.Update(MatrixSubtraction(this.B, ScalarMatrix(this.DB, alpha)))
+		this.W.Update(MatrixSubtraction(this.W, ScalarMatrix(this.dW, alpha)))
+		this.B.Update(MatrixSubtraction(this.B, ScalarMatrix(this.dB, alpha)))
 
 		if i%50000== 0 {
 

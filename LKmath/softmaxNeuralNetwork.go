@@ -9,8 +9,9 @@ import (
 	"time"
 )
 
+
 /*
-Neural network is contributed by layer parameters
+SoftMax Neural network is contributed by layer parameters
 a n hidden layers neural network should have n+1 layer parameters
 the LayerParameter[0] is the parameter between input layer and first hidden layer
 the LayerParameter[n} is the parameter between hidden layer n and output layer
@@ -28,7 +29,7 @@ LayerParameter[x], node parameter[y] is the parameter for the {y+1)th node of th
 layerParameter[0] is the parameter between input layer and first hidden layer
 layerParameter[x] is the parameter between hidden layer x and hidden layer x+1
 */
-type NeuralNetwork struct {
+type SMNeuralNetwork struct {
 	InputLayerNum  int
 	OutputLayerNum int
 	Attribution    Matrix
@@ -41,11 +42,11 @@ type NeuralNetwork struct {
 //cell[0][0] is the number of data of input layer
 //cell[0][x] is the number of node of (x)th hidden layer
 //cell[0][hiddenLayerNo+1] is the number of data of output layer
-func NewNeuralNetworkAttribution(hiddenLayerNo int) Matrix {
+func NewSMNeuralNetworkAttribution(hiddenLayerNo int) Matrix {
 	return NewEmptyMatrix(1, hiddenLayerNo+2)
 }
 
-func NewRandomNeuralNetwork(attribution Matrix, max float64, min float64) NeuralNetwork {
+func NewRandomSMNeuralNetwork(attribution Matrix, max float64, min float64) SMNeuralNetwork {
 
 	inputLayerNum := int(attribution.Cell[0][0])
 	outputLayerNum := int(attribution.Cell[0][attribution.Column-1])
@@ -56,7 +57,7 @@ func NewRandomNeuralNetwork(attribution Matrix, max float64, min float64) Neural
 		Layers = append(Layers, NewRandomLayer(int(attribution.Cell[0][i]), int(attribution.Cell[0][i+1]), max, min))
 	}
 
-	nn := NeuralNetwork{
+	nn := SMNeuralNetwork{
 		Name:           time.Now().Format("2006-01-02 15:04:05"),
 		InputLayerNum:  inputLayerNum,
 		OutputLayerNum: outputLayerNum,
@@ -69,7 +70,7 @@ func NewRandomNeuralNetwork(attribution Matrix, max float64, min float64) Neural
 
 }
 
-func (this *NeuralNetwork) Hprint(info string) {
+func (this *SMNeuralNetwork) Hprint(info string) {
 	fmt.Printf(info + "\n")
 	for i, v := range this.LayerParameter {
 		if i == 0 {
@@ -84,29 +85,37 @@ func (this *NeuralNetwork) Hprint(info string) {
 
 /*--------------------------------------------------forward propagation---------------------------------------------------------*/
 
-func (this *NeuralNetwork) ForwardPropagation(inputMatrix Matrix) (outputMatrix Matrix, temp []Matrix) {
+func (this *SMNeuralNetwork) ForwardPropagation(inputMatrix Matrix) (outputMatrix Matrix, temp []Matrix) {
 
 	temp = append(temp, this.LayerParameter[0].YHat(inputMatrix))
 	for i := 0; i < this.HiddenLayerNum; i++ {
-		temp = append(temp, this.LayerParameter[i+1].YHat(temp[i]))
+		if i==this.HiddenLayerNum-1{
+			temp = append(temp, this.LayerParameter[i+1].SoftMaxYHat(temp[i]))
+
+		}else{
+			temp = append(temp, this.LayerParameter[i+1].YHat(temp[i]))
+
+		}
 	}
+
+
 
 	return NewCopyMatrix(temp[this.HiddenLayerNum]), temp
 }
 
 /*--------------------------------backward propagation ------------------------------------------*/
 
-func (this *NeuralNetwork) UpdateDerivative(X Matrix, y Matrix) {
+func (this *SMNeuralNetwork) UpdateDerivative(X Matrix, y Matrix) {
 
 
 
-	_, forwardTemp := this.ForwardPropagation(X)
+	yHat, forwardTemp := this.ForwardPropagation(X)
 
 	backwardTempMatrix := Matrix{}
 	for i := this.HiddenLayerNum; i >= 0; i-- {
 
 		if i == this.HiddenLayerNum {
-			backwardTempMatrix = this.LayerParameter[i].UpdateDerivative(forwardTemp[i-1], y)
+			backwardTempMatrix = this.LayerParameter[i].UpdateDerivativeForSoftMax(yHat,forwardTemp[i-1], y)
 		} else if i == 0 {
 			this.LayerParameter[i].UpdateDerivativeWithDerivative(X, backwardTempMatrix)
 		} else {
@@ -117,10 +126,10 @@ func (this *NeuralNetwork) UpdateDerivative(X Matrix, y Matrix) {
 
 }
 
-func (this *NeuralNetwork) getCost(X Matrix, y Matrix) (cost float64) {
+func (this *SMNeuralNetwork) getCost(X Matrix, y Matrix) (cost float64) {
 
 	yHatMatrix, _ := this.ForwardPropagation(X)
-	return LogisticRegressionCostFunction(yHatMatrix, y)
+	return SoftMaxCostFunctionForMatrix(yHatMatrix, y)
 
 }
 
@@ -128,20 +137,20 @@ func (this *NeuralNetwork) getCost(X Matrix, y Matrix) (cost float64) {
 
 //X: data( if we have m examples and n features, X should be a (number of input layer) * m matrix)
 //y: result (m examples means we should have m results so y should be a (number of output layer) * m matrix)
-//NeuralNetwork a neural network
+//SMNeuralNetwork a neural network
 //alpha : learning rate (it should be carefully chose) [according to Ng, A, 0.01 is a good choice)
-func (this *NeuralNetwork) GradientDecent(X Matrix, y Matrix, alpha float64, learningTimes int) {
+func (this *SMNeuralNetwork) GradientDecent(X Matrix, y Matrix, alpha float64, learningTimes int) float64{
 
 	if X.Row != this.InputLayerNum || y.Row != this.OutputLayerNum || X.Column != y.Column {
 		fmt.Printf("%v", this.Attribution)
 		panic("format error")
 	}
 
-	//neuralNetworkData :=NewNeuralNetworkData()
-	//neuralNetworkData.ConnectToDatabase("mysql", "root:cjkj@tcp(127.0.0.1:3306)/neural_network")
+	//SMNeuralNetworkData :=NewSMNeuralNetworkData()
+	//SMNeuralNetworkData.ConnectToDatabase("mysql", "root:cjkj@tcp(127.0.0.1:3306)/neural_network")
 	//
 	//fmt.Printf("start reading data from databse...\n")
-	//NeuralNetwork,_ = neuralNetworkData.ReadFromDatabase(NeuralNetworkName, NeuralNetwork)
+	//SMNeuralNetwork,_ = SMNeuralNetworkData.ReadFromDatabase(SMNeuralNetworkName, SMNeuralNetwork)
 
 
 	fmt.Printf("start gradient decent of the neural network\n")
@@ -165,13 +174,14 @@ func (this *NeuralNetwork) GradientDecent(X Matrix, y Matrix, alpha float64, lea
 
 		d = time.Now().Sub(t)
 		t = time.Now()
-		fmt.Printf(fmt.Sprintf("\nprogress : %f", float64((times+1)*100)/float64(learningTimes)) + "%%\n")
+		fmt.Printf(fmt.Sprintf("\nprogress : %f", float64((times+1)*100)/float64(learningTimes)) + "%% \t\t ")
+		fmt.Printf("learning rate is %f\n",alpha)
 		fmt.Printf("the dueration for each update is around %s\n", d.String())
 		fmt.Printf("expect to get the next result on %s\n", t.Add(d).String())
 		fmt.Printf("old cost is: %v,new cost is %v\n", oldCost, cost)
 
 		if cost <= oldCost {
-			alpha *= 1.1
+			alpha *= 1.2
 			oldCost=cost
 		} else {
 			fmt.Printf("Warning:cost is becoming bigger\n")
@@ -194,35 +204,17 @@ func (this *NeuralNetwork) GradientDecent(X Matrix, y Matrix, alpha float64, lea
 
 	}
 
-	this.SaveToJson(DefaultNeuralNetworkDirection)
+	this.SaveToJson(DefaultSMNeuralNetworkDirection)
+
+	return alpha
 
 
 }
 
-func CleanY(y Matrix) Matrix {
-
-	zero := 0
-	one := 0
-	for i := 0; i < y.Row; i++ {
-		for j := 0; j < y.Column; j++ {
-			if y.Cell[i][j] > 0.5 {
-				y.Cell[i][j] = 1
-				one++
-			} else {
-				y.Cell[i][j] = 0
-				zero++
-			}
-
-		}
-	}
-
-	fmt.Printf("there are %d zero and %d one\n", zero, one)
-	return y
-
-}
 
 
-func (this *NeuralNetwork)SaveToJson(dir string){
+
+func (this *SMNeuralNetwork)SaveToJson(dir string){
 
 	this.saveToJsonAsTemp(dir)
 
@@ -252,9 +244,9 @@ func (this *NeuralNetwork)SaveToJson(dir string){
 
 }
 
-const DefaultNeuralNetworkDirection ="data/neural_network_data/"
+const DefaultSMNeuralNetworkDirection ="data/SM_neural_network_data/"
 
-func (this *NeuralNetwork) saveToJsonAsTemp(dir string){
+func (this *SMNeuralNetwork) saveToJsonAsTemp(dir string){
 
 	JSON, MarshalErr := json.MarshalIndent(&this, "", "\t")
 	if MarshalErr !=nil{
@@ -271,13 +263,13 @@ func (this *NeuralNetwork) saveToJsonAsTemp(dir string){
 	outputWriter.WriteString(string(JSON))
 	outputWriter.Flush()
 
-	fmt.Printf("successfully save neuralnetwork to %s\n",fileAddress)
+	fmt.Printf("successfully save SMNeuralNetwork to %s\n",fileAddress)
 }
 
 
-func (this *NeuralNetwork)ReadFromJson(dir string,neuralNetworkName string){
+func (this *SMNeuralNetwork)ReadFromJson(dir string,SMNeuralNetworkName string){
 
-	fileAddress := dir+neuralNetworkName+".json"
+	fileAddress := dir+SMNeuralNetworkName+".json"
 	data, err := ioutil.ReadFile(fileAddress)
 	if err != nil {
 		panic(err)

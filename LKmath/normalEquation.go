@@ -3,7 +3,7 @@ package LKmath
 /*
 normal equation is suitable for calculating with less examples and features
 it is much more faster than linear regression
- */
+*/
 
 func NormalEquation(X Matrix, y Matrix)Matrix{
 	//note: when the normal equation meets the problem of non-invertible matrix
